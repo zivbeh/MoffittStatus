@@ -1,101 +1,129 @@
-import Image from "next/image";
+"use client"
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { ChartConfig, ChartContainer } from "@/components/ui/chart"
+import { Progress } from "@/components/ui/progress"
+import { TrendingUp } from "lucide-react"
+import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
+import { AcademicCapIcon } from '@heroicons/react/24/outline';
+
+const chartData = [
+  { month: "12p", desktop: 186 },
+  { month: "3p", desktop: 305 },
+  { month: "6p", desktop: 237 },
+  { month: "9p", desktop: 73 },
+  { month: "12a", desktop: 214 },
+];
+
+const chartConfig = {
+  desktop: {
+    label: "Desktop",
+    color: "hsl(var(--chart-1))",
+  },
+} satisfies ChartConfig;
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div>
+    <div className="flex justify-between w-full h-full">
+      {/* Title and Cap Icon */}
+      <div className="flex items-center ml-5 mt-5">
+        <AcademicCapIcon className="h-6 w-6 text-primary-500 mr-2" />
+        <h1 className="font-bold text-2xl">MoffittStatus</h1>
+      </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div>
+      <a href="https://www.instagram.com/moffittstatus">@MoffittStatus</a>
+    </div>
+    </div>
+
+      {/* Main Content Layout */}
+      <div className="flex flex-col md:flex-row w-full h-full">
+        {/* Left 1/3: Chart */}
+        <div className="w-full md:w-1/3 p-5">
+          <Card className="h-full">
+            <CardHeader>
+              <CardTitle>Moffitt Capacity</CardTitle>
+              <CardDescription>12pm - 12am</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer config={chartConfig}>
+                <LineChart
+                  accessibilityLayer
+                  data={chartData}
+                  margin={{ left: 12, right: 12 }}
+                >
+                  <CartesianGrid vertical={false} />
+                  <XAxis
+                    dataKey="month"
+                    tickLine={false}
+                    axisLine={false}
+                    tickMargin={8}
+                    tickFormatter={(value) => value.slice(0, 3)}
+                  />
+                  <Line
+                    dataKey="desktop"
+                    type="natural"
+                    stroke="var(--color-desktop)"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                </LineChart>
+              </ChartContainer>
+            </CardContent>
+            <CardFooter className="flex-col items-start gap-2 text-sm">
+              <div className="flex gap-2 font-medium leading-none">
+                Trending up by 5.2% this week <TrendingUp className="h-4 w-4" />
+              </div>
+              <div className="leading-none text-muted-foreground">
+                Showing capacity level for the last 12 hours
+              </div>
+            </CardFooter>
+          </Card>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Right 2/3: Progress Bars and Recommendations */}
+        <div className="w-full md:w-2/3 p-5 flex flex-col">
+          {/* Progress Bars */}
+          <Card className="mb-6">
+            <CardTitle className="ml-5 mt-5 mb-5">Floor Breakdown</CardTitle>
+            <CardContent>
+              <div className="flex items-center w-full mb-3">
+                <span className="mr-4 w-16 text-right"> Floor 1</span>
+                <Progress className="w-full" value={100} />
+              </div>
+              <div className="flex items-center w-full mb-3">
+                <span className="mr-4 w-16 text-right">Floor 3</span>
+                <Progress className="w-full" value={57} />
+              </div>
+              <div className="flex items-center w-full mb-3">
+                <span className="mr-4 w-16 text-right">Floor 4</span>
+                <Progress className="w-full" value={98} />
+              </div>
+              <div className="flex items-center w-full mb-3">
+                <span className="mr-4 w-16 text-right">Floor 5</span>
+                <Progress className="w-full" value={83} />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Recommendations */}
+          <Card>
+            <CardTitle className="mt-5 ml-6 mr-5">Recommendation</CardTitle>
+            <CardDescription className="font-bold ml-6 mt-2">Haas or Doe</CardDescription>
+            <CardContent>
+              <CardDescription className="mt-2">If you're solo, then Floor 1 should be good.</CardDescription>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 }
