@@ -1,4 +1,27 @@
-"use client"
+"use client";
+
+import { Slider } from "@/components/ui/slider"
+
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+
+const formSchema = z.object({
+  floor: z.string().min(2, {
+    message: "Floor must be at least 2 characters.",
+  }),
+});
 
 import {
   Card,
@@ -12,7 +35,7 @@ import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { Progress } from "@/components/ui/progress";
 import { TrendingUp } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
-import { AcademicCapIcon } from '@heroicons/react/24/outline';
+import { AcademicCapIcon } from "@heroicons/react/24/outline";
 
 const chartData = [
   { month: "12p", desktop: 186 },
@@ -30,6 +53,18 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export default function Home() {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      floor: "",
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    // Do something with the form values.
+    console.log(values);
+  }
+
   return (
     <div>
       {/* Title and Cap Icon */}
@@ -39,10 +74,10 @@ export default function Home() {
       </div>
 
       {/* Main Content Layout */}
-      <div className="flex flex-col md:flex-row w-full h-full">
+      <div className="flex flex-col md:flex-row w-full h-full mt-8 items-start">
 
         {/* Left 1/3: Chart */}
-        <div className="w-full md:w-1/3 p-2">  {/* Reduced padding here */}
+        <div className="w-full md:w-1/3 p-2">
           <Card className="h-full">
             <CardHeader>
               <CardTitle>Moffitt Capacity</CardTitle>
@@ -85,14 +120,13 @@ export default function Home() {
         </div>
 
         {/* Middle 1/3: Floor Breakdown and Recommendations */}
-        <div className="w-full md:w-2/3 p-2 flex flex-col">  {/* Reduced padding here */}
-          {/* Progress Bars */}
+        <div className="w-full md:w-1/3 p-2 flex flex-col">
           <Card className="mb-6">
             <CardTitle className="ml-5 mt-5 mb-2">Floor Breakdown</CardTitle>
             <CardDescription className="ml-5 mb-3">Last updated 10 mins ago</CardDescription>
             <CardContent>
               <div className="flex items-center w-full mb-3">
-                <span className="mr-4 w-16 text-right"> Floor 1</span>
+                <span className="mr-4 w-16 text-right">Floor 1</span>
                 <Progress className="w-full" value={10} />
               </div>
               <div className="flex items-center w-full mb-3">
@@ -115,8 +149,114 @@ export default function Home() {
             <CardTitle className="mt-5 ml-6 mr-5">Recommendation</CardTitle>
             <CardDescription className="font-bold ml-6 mt-2">Haas or Doe</CardDescription>
             <CardContent>
-              <CardDescription className="mt-2">If you are solo, then Floor 1 should be good.</CardDescription>
+              <CardDescription className="mt-2">
+                If you are solo, then Floor 1 should be good.
+              </CardDescription>
             </CardContent>
+          </Card>
+        </div>
+
+        {/* Right 1/3: Form */}
+        <div className="w-full md:w-1/3 p-2">
+          <Card className="rounded-lg border border-gray-200 bg-white p-6">
+            <CardTitle className="mb-3">Submit an Update</CardTitle><Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <FormField
+                  control={form.control}
+                  name="floor"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>What floor are you on?</FormLabel>
+                      <FormControl>
+                        <div className="flex space-x-2">
+                          <Button
+                            type="button"
+                            className={`px-4 py-2 rounded-md ${
+                              field.value === "1" ? "bg-gray-500 text-white" : "bg-black text-white"
+                            }`}
+                            onClick={() => field.onChange("1")}
+                          >
+                            Floor 1
+                          </Button>
+                          <Button
+                            type="button"
+                            className={`px-4 py-2 rounded-md ${
+                              field.value === "3" ? "bg-gray-500 text-white" : "bg-black text-white"
+                            }`}
+                            onClick={() => field.onChange("3")}
+                          >
+                            Floor 3
+                          </Button>
+                          <Button
+                            type="button"
+                            className={`px-4 py-2 rounded-md ${
+                              field.value === "4" ? "bg-gray-500 text-white" : "bg-black text-white"
+                            }`}
+                            onClick={() => field.onChange("4")}
+                          >
+                            Floor 4
+                          </Button>
+                          <Button
+                            type="button"
+                            className={`px-4 py-2 rounded-md ${
+                              field.value === "5" ? "bg-gray-500 text-white" : "bg-black text-white"
+                            }`}
+                            onClick={() => field.onChange("5")}
+                          >
+                            Floor 5
+                          </Button>
+                        </div>
+                      </FormControl>
+
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="busyScale"
+                  render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>How busy is it? (1-5)</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        {/* Slider with basic functionality */}
+                        <Slider
+                          value={[Number(field.value)]} // Ensure value is a number
+                          min={1}
+                          max={5}
+                          step={1}
+                          defaultValue={[3]}
+                          onValueChange={(value) => field.onChange(String(value[0]))} // Update form field with string
+                          className="w-full"
+                        />
+                        {/* Dynamic Status */}
+                        <div className="mt-4 text-sm text-gray-600">
+                          <strong>Status:</strong>{" "}
+                          {Number(field.value) === 1 && "Wide Open"}
+                          {Number(field.value) === 2 && "Not Too Busy"}
+                          {Number(field.value) === 3 && "Kinda Busy"}
+                          {Number(field.value) === 4 && "Very Busy"}
+                          {Number(field.value) === 5 && "Extremely Busy"}
+                        </div>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+
+
+
+                  )}
+                />
+                <Button
+                  type="submit"
+                  className="mt-4 w-full bg-black text-white py-2 px-4 rounded-md hover:bg-grey-500"
+                >
+                  Submit
+                </Button>
+              </form>
+            </Form>
           </Card>
         </div>
       </div>
