@@ -39,19 +39,15 @@ const SubmitForm = () => {
         <input
           type="text"
           name="floor"
-          // value={formData.floor}
-          // onChange={handleChange}
           required
         />
       </label>
       <br />
       <label>
-        Open Seats:
+        % Capacity:
         <input
           type="number"
-          name="openSeats"
-          // value={formData.openSeats}
-          // onChange={handleChange}
+          name="Capacity"
           required
         />
       </label>
@@ -61,8 +57,6 @@ const SubmitForm = () => {
         <input
           type="number"
           name="totalSeats"
-          // value={formData.totalSeats}
-          // onChange={handleChange}
           required
         />
       </label>

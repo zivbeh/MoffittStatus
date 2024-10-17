@@ -62,6 +62,7 @@ export default function Home() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
+    console.log("dsdsdsdsd")
     console.log(values);
   }
 

@@ -1,7 +1,22 @@
 [
   {
-    "floor": "1",
-    "openSeats": "1",
-    "totalSeats": "1"
+    "floor": "5",
+    "busyScale": "3",
+    "timeStamp": "2024-10-17T00:29:32.389Z"
+  },
+  {
+    "floor": "3",
+    "busyScale": "2",
+    "timeStamp": "2024-10-17T01:13:08.528Z"
+  },
+  {
+    "floor": "4",
+    "busyScale": "5",
+    "timeStamp": "2024-10-17T01:13:17.859Z"
+  },
+  {
+    "floor": "5",
+    "busyScale": "1",
+    "timeStamp": "2024-10-17T01:13:24.041Z"
   }
 ]
