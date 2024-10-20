@@ -1,6 +1,7 @@
 // components/StatsTable.js
 // import React from 'react';
 // import statsDataJson from '../../data/libraryStats.json';
+'use client'
 import React, { useEffect, useState } from 'react';
 
 
