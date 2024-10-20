@@ -52,7 +52,7 @@ const StatsTable = () => {
           <td>{stat.floor}</td>
           <td style={{ color: Number(stat.busyScale) < 2 ? '#3eed3e' : Number(stat.busyScale) <= 3 ? '#eded5f' : '#ff2020' }}><b>{Number(stat.busyScale)*20}%</b></td>
           <td>{differenceInTimeStr(stat.timeStamp)}</td>
-        </tr>
+        </tr> 
       ))}
     </tbody>
   </table>
