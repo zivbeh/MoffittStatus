@@ -18,5 +18,35 @@
     "floor": "5",
     "busyScale": "1",
     "timeStamp": "2024-10-17T01:13:24.041Z"
+  },
+  {
+    "floor": "1",
+    "busyScale": "3",
+    "timeStamp": "2024-10-17T20:39:37.672Z"
+  },
+  {
+    "floor": "5",
+    "busyScale": "3",
+    "timeStamp": "2024-10-17T20:39:41.074Z"
+  },
+  {
+    "floor": "5",
+    "busyScale": "3",
+    "timeStamp": "2024-10-17T20:39:43.654Z"
+  },
+  {
+    "floor": "3",
+    "busyScale": "2",
+    "timeStamp": "2024-10-17T20:39:48.935Z"
+  },
+  {
+    "floor": "5",
+    "busyScale": "4",
+    "timeStamp": "2024-10-19T00:45:52.575Z"
+  },
+  {
+    "floor": "3",
+    "busyScale": "2",
+    "timeStamp": "2024-10-19T00:45:56.949Z"
   }
 ]

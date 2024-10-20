@@ -1,0 +1,23 @@
+{
+    "development": {
+        "username": "moffittstatus:us-west2:moffittstatus",
+        "password": "1234567",
+        "database": "database_development",
+        "host": "34.94.105.169",
+        "dialect": "mysql"
+    },
+    "test": {
+        "username": "moffittstatus:us-west2:moffittstatus",
+        "password": "zivnehamason123",
+        "database": "database_test",
+        "host": "34.94.105.169",
+        "dialect": "mysql"
+    },
+    "production": {
+        "username": "moffittstatus:us-west2:moffittstatus",
+        "password": "zivnehamason123",
+        "database": "database_production",
+        "host": "34.94.105.169",
+        "dialect": "mysql"
+    }
+}
