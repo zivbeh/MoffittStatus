@@ -1,9 +1,10 @@
 // components/StatsTable.js
-import React from 'react';
-import statsDataJson from '../../data/libraryStats.json';
+// import React from 'react';
+// import statsDataJson from '../../data/libraryStats.json';
+import React, { useEffect, useState } from 'react';
 
 
-const differenceInTimeStr = (savedTime: string | number | Date) => {
+const differenceInTimeStr = (savedTime) => {
   //date format
   const savedDate = new Date(savedTime);
   // Get the current time
@@ -35,7 +36,18 @@ const differenceInTimeStr = (savedTime: string | number | Date) => {
 }
 
 const StatsTable = () => {
-  const statsData = statsDataJson
+  // const statsData = statsDataJson
+  const [statsData, setStatsData] = useState([]);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      const response = await fetch('/api/libraryStats');
+      const data = await response.json();
+      setStatsData(data);
+    };
+
+    fetchStats();
+  }, []);
   console.log("--------------------------------")
   console.log("--------------------------------")
   console.log("--------------------------------")
