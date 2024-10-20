@@ -46,7 +46,15 @@ const UpdateForm = () => {
             },
             body: JSON.stringify(dataToSubmit),
         });
-          
+        console.log("--------------------------------")
+        console.log("--------------------------------")
+        console.log("--------------------------------")
+        console.log(res)
+        console.log("--------------------------------")
+        console.log("--------------------------------")
+        console.log("--------------------------------")
+        console.log("--------------------------------")
+
         if (res.ok) {
             alert(res)
             alert('Data saved successfully!');
