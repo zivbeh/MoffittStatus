@@ -27,7 +27,7 @@ import { Progress } from "@/components/ui/progress"
 import { TrendingUp } from "lucide-react"
 import { CartesianGrid, Line, LineChart, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts"
 import { AcademicCapIcon } from "@heroicons/react/24/outline"
-import { toast } from "@/components/ui/use-toast"
+// import { toast } from "@/components/ui/use-toast"
 
 const formSchema = z.object({
   floor: z.string().min(1, { message: "Please select a floor." }),
@@ -83,19 +83,19 @@ export function Page() {
         [values.floor]: occupancyValue,
       }))
 
-      toast({
-        title: "Update submitted",
-        description: "Thank you for your contribution!",
-      })
+      // toast({
+      //   title: "Update submitted",
+      //   description: "Thank you for your contribution!",
+      // })
 
       form.reset()
     } catch (error) {
       console.error('Error submitting update:', error)
-      toast({
-        title: "Error",
-        description: "Failed to submit update. Please try again.",
-        variant: "destructive",
-      })
+      // toast({
+      //   title: "Error",
+      //   description: "Failed to submit update. Please try again.",
+      //   variant: "destructive",
+      // })
     } finally {
       setIsSubmitting(false)
     }

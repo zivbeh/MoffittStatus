@@ -21,7 +21,11 @@ const formSchema = z.object({
   floor: z.string().min(2, {
     message: "Floor must be at least 2 characters.",
   }),
+  busyScale: z.string().min(1, {
+    message: "Please provide a busy scale rating.",
+  }),
 });
+
 
 import {
   Card,
