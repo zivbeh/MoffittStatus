@@ -36,7 +36,7 @@ const differenceInTimeStr = (savedTime: string | number | Date) => {
 
 const StatsTable = () => {
   const statsData = statsDataJson
-
+  console.log(statsData)
   return (
   <table>
     <thead>
