@@ -2,7 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 
-export default function handler(req, res) {
+export default async function GET(req, res) {
     const filePath = path.join(process.cwd(), 'data', 'libraryStats.json');
     const fileContents = fs.readFileSync(filePath, 'utf8');
     res.status(200).json(JSON.parse(fileContents));
