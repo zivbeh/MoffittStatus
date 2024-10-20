@@ -11,6 +11,7 @@
     "engines": {
         "node": "20.18"
     },
+    "extends": "next",
     "dependencies": {
         "@heroicons/react": "^2.1.5",
         "@hookform/resolvers": "^3.9.0",
