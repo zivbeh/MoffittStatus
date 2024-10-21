@@ -30,7 +30,7 @@ const UpdateForm = () => {
         },
     });
 
-    async function onSubmit(values: z.infer<typeof formSchema>) {
+    async function onSubmit(values) {
         const currentTime = new Date().toISOString();
         
         const dataToSubmit = {
@@ -49,7 +49,7 @@ const UpdateForm = () => {
         console.log("--------------------------------")
         console.log("--------------------------------")
         console.log("--------------------------------")
-        console.log(res)
+        console.log(res[body])
         console.log("--------------------------------")
         console.log("--------------------------------")
         console.log("--------------------------------")
