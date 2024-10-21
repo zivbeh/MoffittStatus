@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { LineChart, CartesianGrid, Line, XAxis } from "recharts";
+import { ResponsiveContainer, LineChart, CartesianGrid, Line, XAxis } from "recharts";
 import { AcademicCapIcon } from "@heroicons/react/24/outline";
 
 type FloorData = {
@@ -76,47 +76,43 @@ export default function HomePage() {
 
   const getProgressValue = (floor: string) => {
     const floorEntries = floorData
-    .filter((entry) => entry.floorID === Number(floor)) // Use floorID and ensure the floor value is a number
-    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  
+      .filter((entry) => entry.floorID === Number(floor))
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
     const latestEntry = floorEntries[0];
     return latestEntry ? Number(latestEntry.busyScale) * 20 : 0;
-  
   };
 
   return (
-    <div className="container mx-auto px-8 py-10">
+    <div className="container mx-auto px-4 sm:px-8 py-10">
       {/* Header with Icon */}
       <div className="flex items-center mb-10">
         <AcademicCapIcon className="h-8 w-8 text-primary-500 mr-4" />
         <h1 className="text-4xl font-bold">MoffittStatus</h1>
       </div>
 
-      <div className="flex gap-8">
-        {/* Left 1/3: Chart */}
-        <div className="w-1/3">
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Left: Chart */}
+        <div className="lg:w-1/3 w-full">
           <Card className="shadow-lg h-full">
             <CardHeader className="p-6">
               <CardTitle className="text-2xl font-semibold">Moffitt Capacity</CardTitle>
               <CardDescription className="text-gray-500">{lastUpdated}</CardDescription>
             </CardHeader>
             <CardContent>
-              <LineChart
-                width={300}
-                height={300}
-                data={chartData}
-                margin={{ top: 0, right: 40, bottom: 5, left: 20 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="hour" />
-                <Line type="monotone" dataKey="capacity" stroke="#8884d8" strokeWidth={2} />
-              </LineChart>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={chartData} margin={{ top: 0, right: 40, bottom: 5, left: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="hour" />
+                  <Line type="monotone" dataKey="capacity" stroke="#8884d8" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
         </div>
 
-        {/* Right 2/3: Progress Bars and Recommendation */}
-        <div className="w-2/3 flex flex-col gap-6">
+        {/* Right: Progress Bars and Recommendation */}
+        <div className="lg:w-2/3 w-full flex flex-col gap-6">
           {/* Progress Bars */}
           <Card className="shadow-lg flex-grow">
             <CardHeader className="p-6">
@@ -146,6 +142,5 @@ export default function HomePage() {
         </div>
       </div>
     </div>
-    
   );
 }
