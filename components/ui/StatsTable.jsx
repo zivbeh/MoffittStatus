@@ -44,19 +44,19 @@ const StatsTable = () => {
     const fetchStats = async () => {
       const response = await fetch('/api/libraryStats');
       const data = await response.json();
+      console.log("--------------------------------")
+      console.log("--------------------------------")
+      console.log("--------------------------------")
+      console.log("--------------------------------")
+      console.log(data)
+      console.log("--------------------------------")
+      console.log("--------------------------------")
+      console.log("--------------------------------")
       setStatsData(data);
     };
 
     fetchStats();
   }, []);
-  console.log("--------------------------------")
-  console.log("--------------------------------")
-  console.log("--------------------------------")
-  console.log("--------------------------------")
-  console.log(statsData)
-  console.log("--------------------------------")
-  console.log("--------------------------------")
-  console.log("--------------------------------")
 
   return (
   <table>
