@@ -7,13 +7,12 @@ import db from '../../../../lib/db';
 
 export async function GET(req, { params }) {
     const { libraryId } = params;
-    console.log(libraryId, req.body)
+    console.log("param /api/libraryStats/[id]", libraryId, req.body)
     try {
-        const connection = await db.getConnection();
-        const [rows] = await connection.query('SELECT * FROM libStats');
-        connection.release();
+        // const connection = await db.getConnection();
+        const [rows] = await db.query('SELECT * FROM libStats');
+        // connection.release();
 
-        console.log('Data from DB:', rows); // Add this line for debugging
         const randomNumber = Math.random();
         return NextResponse.json({ message: rows, random: randomNumber }, {
             headers: {

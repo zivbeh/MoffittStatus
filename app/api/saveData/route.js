@@ -30,17 +30,17 @@ export async function POST(req) {
         // // Write updated data back to the file
         // fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2), 'utf8');
 
-        const connection = await db.getConnection();
+        // const connection = await db.getConnection();
 
         // Insert data into the database
         const query = 'INSERT INTO libStats (floorID, busyScale, createdAt) VALUES (?, ?, ?)';
-        await connection.execute(query, [data.floor, data.busyScale, data.timeStamp]);
+        await db.execute(query, [data.floor, data.busyScale, data.timeStamp]);
 
         // Optionally, you can fetch all data to respond with updated stats
-        const [rows] = await connection.query('SELECT * FROM libStats');
+        const [rows] = await db.query('SELECT * FROM libStats');
 
         // Release the connection back to the pool
-        connection.release();
+        // connection.release();
 
         // Respond with a success message
         return NextResponse.json({ message: rows });
