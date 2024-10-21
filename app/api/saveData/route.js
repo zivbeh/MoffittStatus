@@ -10,8 +10,6 @@ export async function POST(req) {
 
     // const dataDirectory = path.join(process.cwd(), 'data');
     // const filePath = path.join(dataDirectory, 'libraryStats.json');
-    const connection = await db.getConnection();
-
     try {
         const data = await req.json();
 
@@ -33,24 +31,24 @@ export async function POST(req) {
         // // Write updated data back to the file
         // fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2), 'utf8');
 
+        const connection = await db.getConnection();
 
         // Insert data into the database
-        const query = 'INSERT INTO libraryStats (floorID, busyScale, createdAt) VALUES (?, ?, ?)';
-        await connection.execute(query, [data.name, data.statValue, new Date()]);
+        const query = 'INSERT INTO libStats (floorID, busyScale, createdAt) VALUES (?, ?, ?)';
+        await connection.execute(query, [data.floor, data.busyScale, new Date()]);
 
         // Optionally, you can fetch all data to respond with updated stats
-        const [rows] = await connection.query('SELECT * FROM libraryStats');
+        const [rows] = await connection.query('SELECT * FROM libStats');
         console.log(rows)
-            // Release the connection back to the pool
+
+        // Release the connection back to the pool
         connection.release();
 
         // Respond with a success message
-        return NextResponse.json({ message: connection });
+        return NextResponse.json({ message: rows });
     } catch (error) {
         // console.error('Error saving data:', error);
         // const [rows] = await connection.query('SELECT * FROM libraryStats');
-        console.log(error)
-        connection.release();
-        return NextResponse.json({ message: connection }, { status: 500 });
+        return NextResponse.json({ message: error }, { status: 500 });
     }
 }
