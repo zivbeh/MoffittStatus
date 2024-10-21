@@ -39,7 +39,6 @@ export async function POST(req) {
 
         // Optionally, you can fetch all data to respond with updated stats
         const [rows] = await connection.query('SELECT * FROM libStats');
-        console.log(rows)
 
         // Release the connection back to the pool
         connection.release();

@@ -44,15 +44,7 @@ const StatsTable = () => {
     const fetchStats = async () => {
       const response = await fetch('/api/libraryStats');
       const data = await response.json();
-      console.log("--------------------------------")
-      console.log("--------------------------------")
-      console.log("--------------------------------")
-      console.log("--------------------------------")
-      console.log(data)
-      console.log("--------------------------------")
-      console.log("--------------------------------")
-      console.log("--------------------------------")
-      setStatsData(data);
+      setStatsData(data["message"]);
     };
 
     fetchStats();
@@ -70,9 +62,9 @@ const StatsTable = () => {
     <tbody>
       {statsData.map((stat, index) => (
         <tr key={index}>
-          <td>{stat.floor}</td>
+          <td>{stat.floorID}</td>
           <td style={{ color: Number(stat.busyScale) < 2 ? '#3eed3e' : Number(stat.busyScale) <= 3 ? '#eded5f' : '#ff2020' }}><b>{Number(stat.busyScale)*20}%</b></td>
-          <td>{differenceInTimeStr(stat.timeStamp)}</td>
+          <td>{differenceInTimeStr(stat.createdAt)}</td>
         </tr> 
       ))}
     </tbody>
