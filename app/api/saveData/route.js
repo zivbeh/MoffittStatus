@@ -2,10 +2,7 @@
 // import type { NextApiRequest, NextApiResponse } from 'next'
 import fs from 'fs';
 import path from 'path';
-import db from '../../../models';
-// const db = require('../../../models');
-const libStats = db.LibraryStat
-    // console.log(libStats)
+import db from '../../../lib/db';
 
 // Handle POST request
 import { NextResponse } from 'next/server';
@@ -13,16 +10,6 @@ export async function POST(req) {
 
     const dataDirectory = path.join(process.cwd(), 'data');
     const filePath = path.join(dataDirectory, 'libraryStats.json');
-    console.log("----------------------------------------------------")
-    console.log("----------------------------------------------------")
-    console.log("----------------------------------------------------")
-    console.log("----------------------------------------------------")
-    console.log("----------------------------------------------------")
-    console.log("----------------------------------------------------")
-    console.log("----------------------------------------------------")
-    console.log("----------------------------------------------------")
-    console.log("----------------------------------------------------")
-
 
     try {
         const data = await req.json();
@@ -45,11 +32,17 @@ export async function POST(req) {
         // Write updated data back to the file
         fs.writeFileSync(filePath, JSON.stringify(fileData, null, 2), 'utf8');
 
-        const newLibraryStat = await libStats.create({
-            floorID: data.name, // Adjust based on your incoming data structure
-            busyScale: data.statValue, // Adjust based on your incoming data structure
-            createdAt: new Date(), // Use current date for timestamp or adjust based on incoming data
-        });
+        const connection = await db.getConnection();
+
+        // Insert data into the database
+        const query = 'INSERT INTO libraryStats (floorID, busyScale, createdAt) VALUES (?, ?, ?)';
+        await connection.execute(query, [data.name, data.statValue, new Date()]);
+
+        // Optionally, you can fetch all data to respond with updated stats
+        const [rows] = await connection.query('SELECT * FROM libraryStats');
+
+        // Release the connection back to the pool
+        connection.release();
 
         // Respond with a success message
         return NextResponse.json(newLibraryStat);
