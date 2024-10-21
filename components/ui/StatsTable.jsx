@@ -42,7 +42,9 @@ const StatsTable = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
-      const response = await fetch('/api/libraryStats');
+      const response = await fetch('/api/libraryStats', {
+        cache: 'no-store'  // Disable caching on the client-side fetch
+      });
       const data = await response.json();
       console.log("--------------------")
       console.log("--------------------")
