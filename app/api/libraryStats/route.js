@@ -6,12 +6,16 @@ import db from '../../../lib/db';
 
 
 export async function GET() {
-    // const filePath = path.join(process.cwd(), 'data', 'libraryStats.json');
-    // const fileContents = fs.readFileSync(filePath, 'utf8');
+    try {
+        const connection = await db.getConnection();
+        const [rows] = await connection.query('SELECT * FROM libStats');
+        connection.release();
 
-    const connection = await db.getConnection();
-    const [rows] = await connection.query('SELECT * FROM libStats');
-    connection.release();
+        console.log('Data from DB:', rows); // Add this line for debugging
 
-    return NextResponse.json({ message: rows });
+        return NextResponse.json({ message: rows });
+    } catch (error) {
+        console.error('Database query error:', error); // Log any errors
+        return NextResponse.json({ error: 'Failed to fetch data' });
+    }
 }
