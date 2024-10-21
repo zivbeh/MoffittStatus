@@ -52,7 +52,7 @@ export async function POST(req) {
         // });
 
         // Respond with a success message
-        return NextResponse.json({ message: fileData });
+        return NextResponse.json(fileData);
     } catch (error) {
         console.error('Error saving data:', error);
         return NextResponse.json({ message: 'Error saving data.' }, { status: 500 });

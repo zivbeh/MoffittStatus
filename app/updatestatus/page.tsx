@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import './styles.css'
 import { Slider } from "@/components/ui/slider"
 
@@ -30,7 +30,7 @@ const UpdateForm = () => {
         },
     });
 
-    async function onSubmit(values) {
+    async function onSubmit(values: z.infer<typeof formSchema>) {
         const currentTime = new Date().toISOString();
         
         const dataToSubmit = {
@@ -49,14 +49,14 @@ const UpdateForm = () => {
         console.log("--------------------------------")
         console.log("--------------------------------")
         console.log("--------------------------------")
-        console.log(res[body])
+        console.log(res.json())
         console.log("--------------------------------")
         console.log("--------------------------------")
         console.log("--------------------------------")
         console.log("--------------------------------")
 
         if (res.ok) {
-            alert(res)
+            alert(res.json())
             alert('Data saved successfully!');
         } else {
             console.log(res)
