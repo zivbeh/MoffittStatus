@@ -44,6 +44,12 @@ const StatsTable = () => {
     const fetchStats = async () => {
       const response = await fetch('/api/libraryStats');
       const data = await response.json();
+      console.log("--------------------")
+      console.log("--------------------")
+      console.log("--------------------")
+      console.log(data["message"])
+      console.log("--------------------")
+      console.log("--------------------")
       setStatsData(data["message"]);
     };
 

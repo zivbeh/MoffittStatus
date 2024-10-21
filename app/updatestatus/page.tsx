@@ -37,7 +37,7 @@ const UpdateForm = () => {
             ...values,
             timeStamp: currentTime, // Add the timestamp
         };
-        console.log(dataToSubmit);
+        // console.log(dataToSubmit);
 
         const res = await fetch('/api/saveData', {
             method: 'POST',
