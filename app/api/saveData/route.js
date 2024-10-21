@@ -49,7 +49,7 @@ export async function POST(req) {
     } catch (error) {
         // console.error('Error saving data:', error);
         // const [rows] = await connection.query('SELECT * FROM libraryStats');
-        // connection.release();
+        connection.release();
         return NextResponse.json({ message: connection }, { status: 500 });
     }
 }
