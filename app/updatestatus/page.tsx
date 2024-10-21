@@ -49,7 +49,7 @@ const UpdateForm = () => {
         console.log("--------------------------------")
         console.log("--------------------------------")
         console.log("--------------------------------")
-        let x = await res.json()
+        const x = await res.json()
         console.log(x)
         console.log("--------------------------------")
         console.log("--------------------------------")
