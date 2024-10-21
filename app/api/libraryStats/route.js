@@ -13,7 +13,13 @@ export async function GET() {
 
         console.log('Data from DB:', rows); // Add this line for debugging
 
-        return NextResponse.json({ message: rows });
+        return NextResponse.json({ message: rows }, {
+            headers: {
+                'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            }
+        });
     } catch (error) {
         console.error('Database query error:', error); // Log any errors
         return NextResponse.json({ error: error });
