@@ -3,7 +3,8 @@
 // import fs from 'fs';
 // import path from 'path';
 import db from '../../../lib/db';
-
+import { utcToZonedTime } from 'date-fns-tz';
+const timeZone = 'America/Los_Angeles';
 // Handle POST request
 import { NextResponse } from 'next/server';
 export async function POST(req) {
@@ -35,7 +36,7 @@ export async function POST(req) {
 
         // Insert data into the database
         const query = 'INSERT INTO libStats (floorID, busyScale, createdAt) VALUES (?, ?, ?)';
-        await connection.execute(query, [data.floor, data.busyScale, new Date()]);
+        await connection.execute(query, [data.floor, data.busyScale, utcToZonedTime(new Date(), timeZone)]);
 
         // Optionally, you can fetch all data to respond with updated stats
         const [rows] = await connection.query('SELECT * FROM libStats');

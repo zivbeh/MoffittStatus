@@ -25,6 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <title>MoffitStatus</title>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

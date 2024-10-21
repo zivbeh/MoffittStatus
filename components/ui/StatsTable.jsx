@@ -2,14 +2,17 @@
 // import React from 'react';
 // import statsDataJson from '../../data/libraryStats.json';
 'use client'
+import { format, utcToZonedTime } from 'date-fns-tz';
+const timeZone = 'America/Los_Angeles';
 import React, { useEffect, useState } from 'react';
 
 
 const differenceInTimeStr = (savedTime) => {
   //date format
-  const savedDate = new Date(savedTime);
+  const savedDate = format(utcToZonedTime(new Date(savedTime), timeZone), 'yyyy-MM-dd HH:mm:ss');
   // Get the current time
-  const currentDate = new Date();
+  const currentDate = format(utcToZonedTime(new Date(), timeZone), 'yyyy-MM-dd HH:mm:ss')
+
   // Calculate the difference in milliseconds
   const timeDifferenceMs = currentDate.getTime() - savedDate.getTime();
   // Convert the difference to hours and minutes
