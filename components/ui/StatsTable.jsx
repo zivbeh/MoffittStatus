@@ -6,12 +6,11 @@ import { format, utcToZonedTime } from 'date-fns-tz';
 const timeZone = 'America/Los_Angeles';
 import React, { useEffect, useState } from 'react';
 
-
 const differenceInTimeStr = (savedTime) => {
   //date format
-  const savedDate = format(utcToZonedTime(new Date(savedTime), timeZone), 'yyyy-MM-dd HH:mm:ss');
+  const savedDate = new Date(savedTime)
   // Get the current time
-  const currentDate = format(utcToZonedTime(new Date(), timeZone), 'yyyy-MM-dd HH:mm:ss')
+  const currentDate = new Date()
 
   // Calculate the difference in milliseconds
   const timeDifferenceMs = currentDate.getTime() - savedDate.getTime();
