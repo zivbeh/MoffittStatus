@@ -49,12 +49,6 @@ const StatsTable = () => {
         }
     });
       const data = await response.json();
-      console.log("--------------------")
-      console.log("--------------------")
-      console.log("--------------------")
-      console.log(data["message"])
-      console.log("--------------------")
-      console.log("--------------------")
       setStatsData(data["message"]);
     };
 
