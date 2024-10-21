@@ -70,7 +70,7 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchStatusUpdates();
-    const interval = setInterval(fetchStatusUpdates, 25000);
+    const interval = setInterval(fetchStatusUpdates, 60000);
     return () => clearInterval(interval);
   }, []);
 
