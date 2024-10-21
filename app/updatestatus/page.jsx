@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import './styles.css'
 import { Slider } from "@/components/ui/slider"
 
