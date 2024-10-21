@@ -42,7 +42,7 @@ const StatsTable = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
-      const response = await fetch('/api/libraryStats', {
+      const response = await fetch('/api/libraryStats/0', {
         method: 'GET',
         headers: {
             'Cache-Control': 'no-cache' // Additional header to prevent caching
