@@ -57,7 +57,6 @@ const UpdateForm = () => {
         console.log("--------------------------------")
 
         if (res.ok) {
-            alert(x)
             alert('Data saved successfully!');
         } else {
             console.log(res)
