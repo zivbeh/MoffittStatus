@@ -45,7 +45,7 @@ export async function POST(req) {
         connection.release();
 
         // Respond with a success message
-        return NextResponse.json(newLibraryStat);
+        return NextResponse.json(rows);
     } catch (error) {
         console.error('Error saving data:', error);
         return NextResponse.json({ message: 'Error saving data.' }, { status: 500 });
