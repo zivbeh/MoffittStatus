@@ -1,6 +1,6 @@
 // app/api/libraryStats/route.js
-import fs from 'fs';
-import path from 'path';
+// import fs from 'fs';
+// import path from 'path';
 import { NextResponse } from 'next/server';
 import db from '../../../lib/db';
 
