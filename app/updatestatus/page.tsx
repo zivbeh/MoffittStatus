@@ -49,14 +49,15 @@ const UpdateForm = () => {
         console.log("--------------------------------")
         console.log("--------------------------------")
         console.log("--------------------------------")
-        console.log(res.json())
+        let x = await res.json()
+        console.log(x)
         console.log("--------------------------------")
         console.log("--------------------------------")
         console.log("--------------------------------")
         console.log("--------------------------------")
 
         if (res.ok) {
-            alert(res.json())
+            alert(x)
             alert('Data saved successfully!');
         } else {
             console.log(res)
