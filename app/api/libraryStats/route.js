@@ -16,6 +16,6 @@ export async function GET() {
         return NextResponse.json({ message: rows });
     } catch (error) {
         console.error('Database query error:', error); // Log any errors
-        return NextResponse.json({ error: 'Failed to fetch data' });
+        return NextResponse.json({ error: error });
     }
 }
