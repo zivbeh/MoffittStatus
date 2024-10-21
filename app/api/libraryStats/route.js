@@ -12,8 +12,8 @@ export async function GET() {
         connection.release();
 
         console.log('Data from DB:', rows); // Add this line for debugging
-
-        return NextResponse.json({ message: rows }, {
+        const randomNumber = Math.random();
+        return NextResponse.json({ message: rows, random: randomNumber }, {
             headers: {
                 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
                 'Pragma': 'no-cache',
