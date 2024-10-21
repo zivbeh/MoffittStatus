@@ -45,7 +45,7 @@ export async function POST(req) {
         connection.release();
 
         // Respond with a success message
-        return NextResponse.json(connection);
+        return NextResponse.json({ message: connection });
     } catch (error) {
         // console.error('Error saving data:', error);
         // const [rows] = await connection.query('SELECT * FROM libraryStats');
