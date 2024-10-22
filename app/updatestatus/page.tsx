@@ -76,7 +76,7 @@ const UpdateForm = () => {
                   ))}
                 </div>
               </FormControl>
-              <FormMessage name="floor" />
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -108,7 +108,7 @@ const UpdateForm = () => {
                   </div>
                 </div>
               </FormControl>
-              <FormMessage name="busyScale" />
+              <FormMessage />
             </FormItem>
           )}
         />
