@@ -1,5 +1,5 @@
 "use client";
-
+import { GoogleTagManager } from '@next/third-parties/google'
 import { useEffect, useState } from 'react';
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
