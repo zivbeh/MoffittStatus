@@ -36,7 +36,7 @@
     "app/api/saveData/route.js",
     "components/ui/StatsTable.jsx",
     "app/updatestatus/page.tsx"
-  ],
+, "lib/db.js"  ],
   "exclude": [
     "node_modules"
   ]
