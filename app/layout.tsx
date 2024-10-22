@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       {/* Head section */}
-      <Head>
+      {/* <Head> */}
         {/* Google Analytics script */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-FR37LLHHMJ"></script>
         <script dangerouslySetInnerHTML={{
@@ -39,7 +39,7 @@ export default function RootLayout({
           `,
         }} />
         <title>MoffittStatus</title>
-      </Head>
+      {/* </Head> */}
       
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
