@@ -14,7 +14,8 @@ import {
 import { AcademicCapIcon } from "@heroicons/react/24/outline";
 
 type FloorData = {
-  floorID: number;
+  floorID: string;
+  updatedBy: string;
   busyScale: number;
   createdAt: string;
 };
@@ -45,7 +46,9 @@ export default function HomePage() {
       return;
     }
     const mostRecentUpdate = data
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
+      .sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )[0];
     const updateTime = new Date(mostRecentUpdate.createdAt).getTime();
 
     const interval = setInterval(() => {
@@ -77,23 +80,27 @@ export default function HomePage() {
 
   const getProgressValue = (floor: string) => {
     const floorEntries = floorData
-      .filter((entry) => entry.floorID === Number(floor))
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      .filter((entry) => entry.floorID === floor)
+      .sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
 
     const latestEntry = floorEntries[0];
     return latestEntry ? Number(latestEntry.busyScale) * 20 : 0;
   };
 
   const computeLeastBusyFloors = (data: FloorData[]) => {
-    const floorIDs = ["1", "3", "4", "5"];
+    const floorIDs = ["Floor 1", "Floor 3", "Floor 4", "Floor 5"];
     let minBusyScale = Infinity;
     let leastBusy: string[] = [];
     let allAbove79 = true;
 
     floorIDs.forEach((floorID) => {
       const floorEntries = data
-        .filter((entry) => entry.floorID === Number(floorID))
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        .filter((entry) => entry.floorID === floorID)
+        .sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
 
       const latestEntry = floorEntries[0];
       if (latestEntry) {
@@ -124,15 +131,12 @@ export default function HomePage() {
     if (floors.length === 0) {
       return "";
     } else if (floors.length === 1) {
-      return `Floor ${floors[0]}`;
+      return `${floors[0]}`;
     } else if (floors.length === 2) {
-      return `Floor ${floors[0]} or Floor ${floors[1]}`;
+      return `${floors[0]} or ${floors[1]}`;
     } else {
-      const allButLast = floors
-        .slice(0, -1)
-        .map((floor) => `Floor ${floor}`)
-        .join(", ");
-      const last = `or Floor ${floors[floors.length - 1]}`;
+      const allButLast = floors.slice(0, -1).join(", ");
+      const last = `or ${floors[floors.length - 1]}`;
       return `${allButLast}, ${last}`;
     }
   };
@@ -145,7 +149,9 @@ export default function HomePage() {
           <AcademicCapIcon
             className="h-10 w-10 mr-4 transition-transform duration-300 hover:scale-110 bg-gradient-to-r from-black to-white bg-clip-text"
           />
-          <h1 className="text-3xl font-bold transition-transform duration-300 hover:scale-105">MoffittStatus</h1>
+          <h1 className="text-3xl font-bold transition-transform duration-300 hover:scale-105">
+            MoffittStatus
+          </h1>
         </div>
         <a
           href="https://www.instagram.com/moffittstatus"
@@ -153,7 +159,7 @@ export default function HomePage() {
           rel="noopener noreferrer"
           className="text-4xl text-purple-500 hover:text-pink-500 hover:scale-110 transition-transform duration-300 transition-colors"
         >
-          <AiOutlineInstagram/>
+          <AiOutlineInstagram />
         </a>
       </div>
 
@@ -168,9 +174,9 @@ export default function HomePage() {
             <CardDescription className="text-gray-500">{lastUpdated}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 mt-2 mb-4">
-            {["1", "3", "4", "5"].map((floor) => (
+            {["Floor 1", "Floor 3", "Floor 4", "Floor 5"].map((floor) => (
               <div key={floor} className="flex items-center space-x-4">
-                <span className="w-20 text-center font-medium">{`Floor ${floor}`}</span>
+                <span className="w-20 text-center font-medium">{floor}</span>
                 <div className="flex-1">
                   <Progress value={getProgressValue(floor)} className="w-full" />
                 </div>
@@ -191,12 +197,13 @@ export default function HomePage() {
                 <strong>For Solo People:</strong>{" "}
                 {leastBusyFloors.length > 0 ? (
                   <>
-                    We recommend <strong>{formatFloors(leastBusyFloors)}</strong> as it’s currently the least busy!
+                    We recommend <strong>{formatFloors(leastBusyFloors)}</strong>{" "}
+                    as it’s currently the least busy!
                   </>
                 ) : (
                   <>
-                    All floors are at full capacity. We recommend studying at <strong>Haas Library</strong> or{" "}
-                    <strong>Doe Library</strong>.
+                    All floors are at full capacity. We recommend studying at{" "}
+                    <strong>Haas Library</strong> or <strong>Doe Library</strong>.
                   </>
                 )}
               </p>
@@ -205,12 +212,13 @@ export default function HomePage() {
                 <strong>For Groups:</strong>{" "}
                 {allFloorsAbove79 || leastBusyFloors.length === 0 ? (
                   <>
-                    All floors are quite busy. We recommend going to <strong>Haas Library</strong> or{" "}
-                    <strong>Doe Library</strong>.
+                    All floors are quite busy. We recommend going to{" "}
+                    <strong>Haas Library</strong> or <strong>Doe Library</strong>.
                   </>
                 ) : (
                   <>
-                    We recommend <strong>{formatFloors(leastBusyFloors)}</strong> as it’s currently the least busy!
+                    We recommend <strong>{formatFloors(leastBusyFloors)}</strong>{" "}
+                    as it’s currently the least busy!
                   </>
                 )}
               </p>

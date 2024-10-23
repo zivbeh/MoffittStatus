@@ -23,21 +23,28 @@ const FormMessage: React.FC<FormMessageProps> = ({ error }) => (
 );
 
 const formSchema = z.object({
-  floor: z.enum(["1", "3", "4", "5"], {
+  floor: z.enum(["Floor 1", "Floor 3", "Floor 4", "Floor 5"], {
     required_error: "Please select a valid floor.",
   }),
   busyScale: z.enum(["1", "2", "3", "4", "5"], {
     required_error: "Please provide a valid busy scale.",
   }),
+  updatedBy: z
+    .string()
+    .max(255, "Must be 255 characters or less.")
+    .nonempty("Please enter your name or @."),
 });
+
+
 
 const UpdateForm = () => {
   const methods = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      floor: "1",
+      floor: "Floor 1",
       busyScale: "3",
-    },
+      updatedBy: "Anonymous",
+    },    
   });
 
   const { handleSubmit, formState: { errors } } = methods;
@@ -98,33 +105,34 @@ const UpdateForm = () => {
         >
           {/* Floor Field */}
           <FormField
-            control={methods.control}
-            name="floor"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>What floor are you on?</FormLabel>
-                <FormControl>
-                  <div className="flex justify-center gap-2 mt-2">
-                    {["1", "3", "4", "5"].map((floor) => (
-                      <Button
-                        key={floor}
-                        type="button"
-                        className={`px-4 py-2 rounded-md transition-all duration-300 ${
-                          field.value === floor
-                            ? "bg-gray-700 text-white"
-                            : "bg-gray-300 text-black hover:bg-gray-400"
-                        }`}
-                        onClick={() => field.onChange(floor)}
-                      >
-                        Floor {floor}
-                      </Button>
-                    ))}
-                  </div>
-                </FormControl>
-                <FormMessage error={errors.floor?.message} />
-              </FormItem>
-            )}
-          />
+          control={methods.control}
+          name="floor"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>What floor are you on?</FormLabel>
+              <FormControl>
+                <div className="flex justify-center gap-2 mt-2">
+                  {["Floor 1", "Floor 3", "Floor 4", "Floor 5"].map((floorLabel) => (
+                    <Button
+                      key={floorLabel}
+                      type="button"
+                      className={`px-4 py-2 rounded-md transition-all duration-300 ${
+                        field.value === floorLabel
+                          ? "bg-gray-700 text-white"
+                          : "bg-gray-300 text-black hover:bg-gray-400"
+                      }`}
+                      onClick={() => field.onChange(floorLabel)}
+                    >
+                      {floorLabel}
+                    </Button>
+                  ))}
+                </div>
+              </FormControl>
+              <FormMessage error={errors.floor?.message} />
+            </FormItem>
+          )}
+        />
+
 
           {/* Busy Scale Field */}
           <FormField
@@ -155,6 +163,25 @@ const UpdateForm = () => {
                   </div>
                 </FormControl>
                 <FormMessage error={errors.busyScale?.message} />
+              </FormItem>
+            )}
+          />
+          {/* Updated By Field */}
+          <FormField
+            control={methods.control}
+            name="updatedBy"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Your Name</FormLabel>
+                <FormControl>
+                  <input
+                    type="text"
+                    {...field}
+                    maxLength={255}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </FormControl>
+                <FormMessage error={errors.updatedBy?.message} />
               </FormItem>
             )}
           />

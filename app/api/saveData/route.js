@@ -33,8 +33,8 @@ export async function POST(req) {
         // const connection = await db.getConnection();
 
         // Insert data into the database
-        const query = 'INSERT INTO libStats (floorID, busyScale, createdAt) VALUES (?, ?, ?)';
-        await db.execute(query, [data.floor, data.busyScale, data.timeStamp]);
+        const query = 'INSERT INTO libStats (floorID, updatedBy, busyScale, createdAt) VALUES (?, ?, ?, ?)';
+        await db.execute(query, [data.floor, data.updatedBy | null, data.busyScale, data.timeStamp]);
 
         // Optionally, you can fetch all data to respond with updated stats
         const [rows] = await db.query('SELECT * FROM libStats');
