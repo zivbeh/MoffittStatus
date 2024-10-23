@@ -64,7 +64,7 @@ const UpdateForm = () => {
       },
       body: JSON.stringify(dataToSubmit),
     });
-
+    console.log(dataToSubmit)
     if (res.ok) {
       alert("Data saved successfully!");
     } else {

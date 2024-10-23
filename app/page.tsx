@@ -25,6 +25,7 @@ export default function HomePage() {
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [leastBusyFloors, setLeastBusyFloors] = useState<string[]>([]);
   const [allFloorsAbove79, setAllFloorsAbove79] = useState<boolean>(false);
+  const [recentUpdaters, setRecentUpdaters] = useState<string[]>([]); // New state variable
 
   const fetchStatusUpdates = async () => {
     try {
@@ -34,6 +35,7 @@ export default function HomePage() {
         setFloorData(data["message"]);
         updateLastUpdatedTime(data["message"]);
         computeLeastBusyFloors(data["message"]);
+        computeRecentUpdaters(data["message"]); // Call the new function
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -125,6 +127,18 @@ export default function HomePage() {
 
     setLeastBusyFloors(leastBusy);
     setAllFloorsAbove79(allAbove79);
+  };
+
+  // New function to compute recent updaters
+  const computeRecentUpdaters = (data: FloorData[]) => {
+    const sortedData = data.sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+    const updaters = sortedData
+      .map((entry) => entry.updatedBy)
+      .filter((name, index, self) => name && self.indexOf(name) === index)
+      .slice(0, 4);
+    setRecentUpdaters(updaters);
   };
 
   const formatFloors = (floors: string[]) => {
@@ -225,6 +239,31 @@ export default function HomePage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Thank You Section */}
+        <div className="mt-8">
+          <Card className="shadow-md transition-transform duration-300 hover:scale-105">
+            <CardHeader className="text-left p-6">
+              <CardTitle className="text-xl font-semibold">Moffitt Demons!</CardTitle>
+              <CardDescription className="text-gray-500">
+                A special thanks to our recent contributors:
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2 p-6">
+              {recentUpdaters.length > 0 ? (
+                <ul className="list-disc list-inside">
+                  {recentUpdaters.map((name, index) => (
+                    <li key={index} className="text-lg">
+                      {name}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No recent updates yet.</p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
