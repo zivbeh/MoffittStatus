@@ -1,5 +1,7 @@
 "use client";
-import './styles.css';
+
+import { AiOutlineInstagram } from "react-icons/ai";
+import { AcademicCapIcon } from "@heroicons/react/24/outline";
 import { Slider } from "@/components/ui/slider";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,7 +14,6 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 
-// Custom FormMessage Component to Display Errors
 interface FormMessageProps {
   error?: string;
 }
@@ -22,8 +23,12 @@ const FormMessage: React.FC<FormMessageProps> = ({ error }) => (
 );
 
 const formSchema = z.object({
-  floor: z.enum(["1", "3", "4", "5"], { required_error: "Please select a valid floor." }),
-  busyScale: z.enum(["1", "2", "3", "4", "5"], { required_error: "Please provide a valid busy scale." }),
+  floor: z.enum(["1", "3", "4", "5"], {
+    required_error: "Please select a valid floor.",
+  }),
+  busyScale: z.enum(["1", "2", "3", "4", "5"], {
+    required_error: "Please provide a valid busy scale.",
+  }),
 });
 
 const UpdateForm = () => {
@@ -45,27 +50,51 @@ const UpdateForm = () => {
       timeStamp: currentTime,
     };
 
-    const res = await fetch('/api/saveData', {
-      method: 'POST',
+    const res = await fetch("/api/saveData", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(dataToSubmit),
     });
 
     if (res.ok) {
-      alert('Data saved successfully!');
+      alert("Data saved successfully!");
     } else {
-      alert('Failed to save data.');
+      alert("Failed to save data.");
     }
   }
 
   return (
-    <div className="flex justify-center items-center min-h-screen p-4">
+    <div className="container mx-auto px-4 py-10 bg-white">
+      {/* Header Section */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center">
+          <AcademicCapIcon
+            className="h-10 w-10 mr-4 transition-transform duration-300 hover:scale-110 bg-gradient-to-r from-black to-white bg-clip-text"
+          />
+          <h1 className="text-3xl font-bold transition-transform duration-300 hover:scale-105">
+            MoffittStatus
+          </h1>
+        </div>
+        <a
+          href="https://www.instagram.com/moffittstatus"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-4xl text-purple-500 hover:text-pink-500 hover:scale-110 transition-transform duration-300"
+        >
+          <AiOutlineInstagram />
+        </a>
+      </div>
+
+      {/* Thin Divider */}
+      <div className="w-full h-[1px] bg-gray-300 mb-8"></div>
+
+      {/* Form Section */}
       <FormProvider {...methods}>
-        <form 
-          onSubmit={handleSubmit(onSubmit)} 
-          className="space-y-6 bg-white shadow-md p-6 rounded-lg max-w-md w-full"
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="mt-20 space-y-6 bg-white shadow-md p-6 rounded-lg max-w-md w-full mx-auto"
         >
           {/* Floor Field */}
           <FormField

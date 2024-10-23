@@ -157,6 +157,9 @@ export default function HomePage() {
         </a>
       </div>
 
+      {/* Thin Divider */}
+      <div className="w-full h-[1px] bg-gray-300 mb-8"></div>
+
       {/* Floor Breakdown */}
       <div className="flex flex-col gap-6">
         <Card className="shadow-md transition-transform duration-300 hover:scale-105">
