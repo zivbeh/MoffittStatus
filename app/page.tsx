@@ -1,9 +1,16 @@
 "use client";
 
-import { AiOutlineInstagram } from 'react-icons/ai';
-import { useEffect, useState } from 'react';
+import { AiOutlineInstagram } from "react-icons/ai";
+import { useEffect, useState } from "react";
 import { Progress } from "@/components/ui/progress";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+
 import { AcademicCapIcon } from "@heroicons/react/24/outline";
 
 type FloorData = {
@@ -16,6 +23,7 @@ export default function HomePage() {
   const [floorData, setFloorData] = useState<FloorData[]>([]);
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [leastBusyFloors, setLeastBusyFloors] = useState<string[]>([]);
+  const [allFloorsAbove79, setAllFloorsAbove79] = useState<boolean>(false);
 
   const fetchStatusUpdates = async () => {
     try {
@@ -80,6 +88,7 @@ export default function HomePage() {
     const floorIDs = ["1", "3", "4", "5"];
     let minBusyScale = Infinity;
     let leastBusy: string[] = [];
+    let allAbove79 = true;
 
     floorIDs.forEach((floorID) => {
       const floorEntries = data
@@ -89,16 +98,26 @@ export default function HomePage() {
       const latestEntry = floorEntries[0];
       if (latestEntry) {
         const busyScale = Number(latestEntry.busyScale);
-        if (busyScale < minBusyScale) {
-          minBusyScale = busyScale;
-          leastBusy = [floorID];
-        } else if (busyScale === minBusyScale) {
-          leastBusy.push(floorID);
+        const progressValue = busyScale * 20;
+
+        if (progressValue <= 79) {
+          allAbove79 = false;
+        }
+
+        if (progressValue < 100) {
+          // Exclude floors at 100% capacity
+          if (busyScale < minBusyScale) {
+            minBusyScale = busyScale;
+            leastBusy = [floorID];
+          } else if (busyScale === minBusyScale) {
+            leastBusy.push(floorID);
+          }
         }
       }
     });
 
     setLeastBusyFloors(leastBusy);
+    setAllFloorsAbove79(allAbove79);
   };
 
   const formatFloors = (floors: string[]) => {
@@ -109,72 +128,90 @@ export default function HomePage() {
     } else if (floors.length === 2) {
       return `Floor ${floors[0]} or Floor ${floors[1]}`;
     } else {
-      const allButLast = floors.slice(0, -1).map(floor => `Floor ${floor}`).join(', ');
+      const allButLast = floors
+        .slice(0, -1)
+        .map((floor) => `Floor ${floor}`)
+        .join(", ");
       const last = `or Floor ${floors[floors.length - 1]}`;
       return `${allButLast}, ${last}`;
     }
   };
 
   return (
-    <div className="container mx-auto px-8 py-10">
-      {/* Header with Icon and Instagram Link */}
-      <div className="flex items-center justify-between mb-10">
+    <div className="container mx-auto px-4 py-10">
+      {/* Header Section */}
+      <div className="flex items-center justify-between mb-8">
         <div className="flex items-center">
-          <AcademicCapIcon className="h-8 w-8 text-primary-500 mr-4" />
-          <h1 className="text-4xl font-bold">MoffittStatus</h1>
+          <AcademicCapIcon
+            className="h-10 w-10 mr-4 transition-transform duration-300 hover:scale-110 bg-gradient-to-r from-black to-white bg-clip-text"
+          />
+          <h1 className="text-3xl font-bold transition-transform duration-300 hover:scale-105">MoffittStatus</h1>
         </div>
-
         <a
           href="https://www.instagram.com/moffittstatus"
           target="_blank"
           rel="noopener noreferrer"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '2rem',
-            color: '#833AB4',
-            transition: 'color 0.3s ease',
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = '#C13584')}
-          onMouseLeave={(e) => (e.currentTarget.style.color = '#833AB4')}
+          className="text-4xl text-purple-500 hover:text-pink-500 hover:scale-110 transition-transform duration-300 transition-colors"
         >
-          <AiOutlineInstagram />
+          <AiOutlineInstagram/>
         </a>
       </div>
 
-      {/* Content */}
+      {/* Floor Breakdown */}
       <div className="flex flex-col gap-6">
-        {/* Progress Bars */}
-        <Card className="shadow-lg">
-          <CardHeader className="p-6">
-            <CardTitle className="text-2xl font-semibold">Floor Breakdown</CardTitle>
+        <Card className="shadow-md transition-transform duration-300 hover:scale-105">
+          <CardHeader className="text-left p-6">
+            <CardTitle className="text-xl font-semibold">Floor Breakdown</CardTitle>
             <CardDescription className="text-gray-500">{lastUpdated}</CardDescription>
           </CardHeader>
-          <CardContent className="p-6 space-y-4">
+          <CardContent className="space-y-6 mt-2 mb-4">
             {["1", "3", "4", "5"].map((floor) => (
-              <div key={floor} className="flex items-center">
-                <span className="w-24 text-right font-medium">{`Floor ${floor}`}</span>
-                <Progress className="flex-1 ml-4" value={getProgressValue(floor)} />
+              <div key={floor} className="flex items-center space-x-4">
+                <span className="w-20 text-center font-medium">{`Floor ${floor}`}</span>
+                <div className="flex-1">
+                  <Progress value={getProgressValue(floor)} className="w-full" />
+                </div>
               </div>
             ))}
           </CardContent>
         </Card>
 
         {/* Recommendations */}
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl font-semibold">Recommendation</CardTitle>
+        <Card className="shadow-md w-full mx-auto transition-transform duration-300 hover:scale-105">
+          <CardHeader className="text-left">
+            <CardTitle className="text-xl font-semibold">Recommendation</CardTitle>
           </CardHeader>
-          <CardContent className="text-lg">
-            {leastBusyFloors.length > 0 ? (
-              <p>
-                We recommend you go to <strong>{formatFloors(leastBusyFloors)}</strong> as{' '}
-                {leastBusyFloors.length > 1 ? 'they are' : 'it is'} currently the least busy!
+          <CardContent className="">
+            <div className="space-y-4">
+              {/* Solo Recommendation */}
+              <p className="text-left text-lg">
+                <strong>For Solo People:</strong>{" "}
+                {leastBusyFloors.length > 0 ? (
+                  <>
+                    We recommend <strong>{formatFloors(leastBusyFloors)}</strong> as it’s currently the least busy!
+                  </>
+                ) : (
+                  <>
+                    All floors are at full capacity. We recommend studying at <strong>Haas Library</strong> or{" "}
+                    <strong>Doe Library</strong>.
+                  </>
+                )}
               </p>
-            ) : (
-              <p>No data available to make a recommendation.</p>
-            )}
+              {/* Group Recommendation */}
+              <p className="text-left text-lg">
+                <strong>For Groups:</strong>{" "}
+                {allFloorsAbove79 || leastBusyFloors.length === 0 ? (
+                  <>
+                    All floors are quite busy. We recommend going to <strong>Haas Library</strong> or{" "}
+                    <strong>Doe Library</strong>.
+                  </>
+                ) : (
+                  <>
+                    We recommend <strong>{formatFloors(leastBusyFloors)}</strong> as it’s currently the least busy!
+                  </>
+                )}
+              </p>
+            </div>
           </CardContent>
         </Card>
       </div>
