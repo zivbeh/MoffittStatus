@@ -27,7 +27,7 @@ const formSchema = z.object({
     required_error: "Please select a library.",
   }),
   floor: z
-    .enum(["Floor 1", "Floor 3", "Floor 4", "Floor 5"])
+    .enum(["Floor 1", "Floor 2", "Floor 3", "Floor 4", "Floor 5"])
     .optional()
     .nullable(),
   busyScale: z.enum(["1", "2", "3", "4", "5"], {
@@ -63,14 +63,14 @@ const UpdateForm = () => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const currentTime = new Date().toISOString();
 
-    // For Haas and Doe Libraries, set floor to null
+    // For Haas, Doe, and Main Stacks Libraries, set floor to null
     if (values.libraryName !== "Moffitt Library") {
       values.floor = null;
     }
 
     const dataToSubmit = {
       ...values,
-      timeStamp: currentTime,
+      createdAt: currentTime,
     };
 
     const res = await fetch("/api/saveData", {
@@ -115,7 +115,7 @@ const UpdateForm = () => {
       <FormProvider {...methods}>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="mt-20 space-y-6 bg-white shadow-md p-6 rounded-lg max-w-md w-full mx-auto"
+          className="mt-20 space-y-6 bg-white shadow-md p-6 rounded-lg max-w-lg w-full mx-auto"
         >
           {/* Library Field */}
           <FormField
@@ -125,7 +125,7 @@ const UpdateForm = () => {
               <FormItem>
                 <FormLabel>Select Library</FormLabel>
                 <FormControl>
-                  <div className="flex justify-center gap-2 mt-2">
+                  <div className="flex flex-wrap justify-center gap-2 mt-2">
                     {["Moffitt Library", "Doe Library", "Haas Library", "Main Stacks"].map(
                       (libraryName) => (
                         <Button
@@ -158,8 +158,8 @@ const UpdateForm = () => {
                 <FormItem>
                   <FormLabel>What floor are you on?</FormLabel>
                   <FormControl>
-                    <div className="flex justify-center gap-2 mt-2">
-                      {["Floor 1", "Floor 3", "Floor 4", "Floor 5"].map(
+                    <div className="flex flex-wrap justify-center gap-2 mt-2">
+                      {["Floor 1", "Floor 2", "Floor 3", "Floor 4", "Floor 5"].map(
                         (floorLabel) => (
                           <Button
                             key={floorLabel}

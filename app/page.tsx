@@ -45,7 +45,6 @@ export default function HomePage() {
       console.error('Error fetching data:', error);
     }
   };
-  
 
   const updateLastUpdatedTime = (data: FloorData[]) => {
     if (data.length === 0) {
@@ -101,7 +100,7 @@ export default function HomePage() {
   };
 
   const computeLeastBusyFloors = (data: FloorData[]) => {
-    const floorIDs = ["Floor 1", "Floor 3", "Floor 4", "Floor 5"];
+    const floorIDs = ["Floor 1", "Floor 2", "Floor 3", "Floor 4"];
     let minBusyScale = Infinity;
     let leastBusy: string[] = [];
     let allAbove79 = true;
@@ -125,14 +124,11 @@ export default function HomePage() {
           allAbove79 = false;
         }
 
-        if (progressValue < 100) {
-          // Exclude floors at 100% capacity
-          if (busyScale < minBusyScale) {
-            minBusyScale = busyScale;
-            leastBusy = [floorID];
-          } else if (busyScale === minBusyScale) {
-            leastBusy.push(floorID);
-          }
+        if (progressValue < minBusyScale && progressValue < 100) {
+          minBusyScale = progressValue;
+          leastBusy = [floorID];
+        } else if (progressValue === minBusyScale) {
+          leastBusy.push(floorID);
         }
       }
     });
@@ -196,12 +192,12 @@ export default function HomePage() {
             <CardTitle className="text-xl font-semibold">Library Status</CardTitle>
             <CardDescription className="text-gray-500">{lastUpdated}</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6 mt-2 mb-4">
-            {/* Moffitt Library Floors */}
-            <div>
-              <h2 className="text-lg font-semibold mb-2">Moffitt Library</h2>
+          <CardContent className="flex flex-row gap-6 mt-2 mb-4">
+            {/* Left Side: Moffitt Library */}
+            <div className="flex-1">
+              <h2 className="text-lg text-center font-semibold ml-5 mb-2">Moffitt Library</h2>
               {["Floor 1", "Floor 3", "Floor 4", "Floor 5"].map((floor) => (
-                <div key={floor} className="flex items-center space-x-4">
+                <div key={floor} className="flex items-center space-x-4 mb-4">
                   <span className="w-20 text-center font-medium">{floor}</span>
                   <div className="flex-1">
                     <Progress
@@ -213,59 +209,66 @@ export default function HomePage() {
               ))}
             </div>
 
-            {/* Main Stacks */}
-            <div>
-              <div className="flex items-center space-x-4">
-                <span className="w-20 text-center font-medium">Main Stacks</span>
-                <div className="flex-1">
-                  <Progress
+            {/* Thin Dividing Line */}
+            <div className="w-px bg-gray-300"></div>
+
+            {/* Right Side: Other Libraries */}
+            <div className="flex-1">
+              {/* Main Stacks */}
+              <div className="mb-4">
+                <h2 className="text-lg font-semibold text-center mb-2">Main Stacks</h2>
+                <div className="flex items-center space-x-4">
+                  <span className="w-20 text-center font-medium">Overall</span>
+                  <div className="flex-1">
+                    <Progress
                     value={getProgressValue("Main Stacks")}
                     className="w-full"
-                  />
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
 
-
-            {/* Doe Library */}
-            <div>
-              <div className="flex items-center space-x-4">
-                <span className="w-20 text-center font-medium">Doe</span>
-                <div className="flex-1">
-                  <Progress
-                    value={getProgressValue("Doe Library")}
-                    className="w-full"
-                  />
+              {/* Doe Library */}
+              <div className="mb-4">
+                <h2 className="text-lg font-semibold text-center mb-2">Doe Library</h2>
+                <div className="flex items-center space-x-4">
+                  <span className="w-20 text-center font-medium">Overall</span>
+                  <div className="flex-1">
+                    <Progress
+                      value={getProgressValue("Doe Library")}
+                      className="w-full"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Haas Library */}
-            <div>
-              <div className="flex items-center space-x-4">
-                <span className="w-20 text-center font-medium">Haas</span>
-                <div className="flex-1">
-                  <Progress
-                    value={getProgressValue("Haas Library")}
-                    className="w-full"
-                  />
+              {/* Haas Library */}
+              <div>
+                <h2 className="text-lg font-semibold text-center mb-2">Haas Library</h2>
+                <div className="flex items-center space-x-4">
+                  <span className="w-20 text-center font-medium">Overall</span>
+                  <div className="flex-1">
+                    <Progress
+                      value={getProgressValue("Haas Library")}
+                      className="w-full"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
-      </div>
 
         {/* Recommendations */}
         <Card className="shadow-md w-full mx-auto transition-transform duration-300 hover:scale-105">
-          <CardHeader className="text-left">
-            <CardTitle className="text-xl font-semibold">Recommendation</CardTitle>
+          <CardHeader className="text-left p-6">
+            <CardTitle className="text-xl font-semibold">Recommendations</CardTitle>
           </CardHeader>
           <CardContent className="">
             <div className="space-y-4">
               {/* Solo Recommendation */}
               <p className="text-left text-lg">
-                <strong>For Solo People:</strong>{" "}
+                <strong>For Solo Studying:</strong>{" "}
                 {leastBusyFloors.length > 0 ? (
                   <>
                     We recommend <strong>{formatFloors(leastBusyFloors)}</strong> in
@@ -273,14 +276,13 @@ export default function HomePage() {
                   </>
                 ) : (
                   <>
-                    All floors in Moffitt Library are at full capacity. Consider
-                    studying at{" "}
+                    All floors in Moffitt Library are quite busy. Consider studying at{" "}
                     <strong>
                       {getProgressValue("Doe Library") < 80
                         ? "Doe Library"
                         : getProgressValue("Haas Library") < 80
                         ? "Haas Library"
-                        : "another location"}
+                        : "Main Stacks"}
                     </strong>
                     .
                   </>
@@ -297,7 +299,7 @@ export default function HomePage() {
                         ? "Doe Library"
                         : getProgressValue("Haas Library") < 80
                         ? "Haas Library"
-                        : "another location"}
+                        : "Main Stacks"}
                     </strong>
                     .
                   </>
@@ -313,7 +315,7 @@ export default function HomePage() {
         </Card>
 
         {/* Thank You Section */}
-        <div className="mt-8">
+        <div>
           <Card className="shadow-md transition-transform duration-300 hover:scale-105">
             <CardHeader className="text-left p-6">
               <CardTitle className="text-xl font-semibold">Library Contributors</CardTitle>
@@ -321,7 +323,7 @@ export default function HomePage() {
                 A special thanks to our recent contributors:
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2 p-6">
+            <CardContent className="space-y-2">
               {recentUpdaters.length > 0 ? (
                 <ul className="list-disc list-inside">
                   {recentUpdaters.map((name, index) => (
@@ -337,6 +339,6 @@ export default function HomePage() {
           </Card>
         </div>
       </div>
-
+    </div>
   );
 }
