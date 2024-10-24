@@ -67,7 +67,7 @@ const UpdateForm = () => {
     if (values.libraryName !== "Moffitt Library") {
       values.floor = null;
     }
-
+    console.log(currentTime)
     const dataToSubmit = {
       ...values,
       createdAt: currentTime,
