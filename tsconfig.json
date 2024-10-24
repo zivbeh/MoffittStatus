@@ -29,6 +29,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/api/saveData/route.js",
+    "app/api/libraryStats/[id]/route.js",
     "components/ui/StatsTable.tsx", // Updated to .tsx
     "app/updatestatus/page.tsx",
     "lib/db.ts",
