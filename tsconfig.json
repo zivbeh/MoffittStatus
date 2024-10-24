@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".", // Ensure baseUrl is set for absolute imports
     "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": false, // Disable since you're using TypeScript exclusively
+    "allowJs": true, // Disable since you're using TypeScript exclusively
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
@@ -29,7 +29,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/api/saveData/route.js",
-    "app/api/libraryStats/[id]/route.js",
     "components/ui/StatsTable.tsx", // Updated to .tsx
     "app/updatestatus/page.tsx",
     "lib/db.ts",
