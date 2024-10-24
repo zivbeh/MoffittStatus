@@ -163,9 +163,9 @@ export default function HomePage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-10">
+    <div className="container mx-auto px-4 mt-5">
       {/* Header Section */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-5">
         <div className="flex items-center">
           <AcademicCapIcon className="h-10 w-10 mr-4 transition-transform duration-300 hover:scale-110 bg-gradient-to-r from-black to-white bg-clip-text" />
           <h1 className="text-3xl font-bold transition-transform duration-300 hover:scale-105">
@@ -183,22 +183,27 @@ export default function HomePage() {
       </div>
 
       {/* Thin Divider */}
-      <div className="w-full h-[1px] bg-gray-300 mb-8"></div>
+      <div className="w-full h-[1px] bg-gray-300 mb-5"></div>
 
       {/* Floor Breakdown */}
-      <div className="flex flex-col gap-6">
+      <div className="w-full flex flex-col gap-6">
         <Card className="shadow-md transition-transform duration-300 hover:scale-105">
-          <CardHeader className="text-left p-6">
+          <CardHeader className="text-left p-4"> {/* Reduced padding from p-6 to p-4 */}
             <CardTitle className="text-xl font-semibold">Library Status</CardTitle>
-            <CardDescription className="text-gray-500">{lastUpdated}</CardDescription>
+            <CardDescription className="text-gray-500 text-sm"> {/* Reduced text size */}
+              {lastUpdated}
+            </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-row gap-6 mt-2 mb-4">
-            {/* Left Side: Moffitt Library */}
+          <CardContent className="flex flex-col gap-2 mt-2 mb-4"> {/* Reduced gap from 4 to 2 */}
+            {/* Moffitt Library Section */}
             <div className="flex-1">
-              <h2 className="text-lg text-center font-semibold ml-5 mb-2">Moffitt Library</h2>
+              <h2 className="text-lg text-center font-semibold mb-3">Moffitt Library</h2> {/* Reduced margin-bottom from mb-5 to mb-3 */}
               {["Floor 1", "Floor 3", "Floor 4", "Floor 5"].map((floor) => (
-                <div key={floor} className="flex items-center space-x-4 mb-4">
-                  <span className="w-20 text-center font-medium">{floor}</span>
+                <div key={floor} className="flex items-center space-x-2 mb-2"> {/* Reduced mb-4 to mb-2 */}
+                  <span className="w-20 text-center font-medium">
+                    {/* Always show "Floor X" */}
+                    {floor}
+                  </span>
                   <div className="flex-1">
                     <Progress
                       value={getProgressValue("Moffitt Library", floor)}
@@ -209,30 +214,29 @@ export default function HomePage() {
               ))}
             </div>
 
-            {/* Thin Dividing Line */}
-            <div className="w-px bg-gray-300"></div>
+            {/* Thin Horizontal Divider */}
+            <div className="w-full h-px bg-gray-300 my-2"></div> {/* Reduced vertical margin from my-4 to my-2 */}
 
-            {/* Right Side: Other Libraries */}
-            <div className="flex-1">
+            {/* Other Libraries Section */}
+            <div className="flex-1 space-y-2"> {/* Reduced space-y-5 to space-y-2 */}
+              <h2 className="text-lg text-center font-semibold mb-3">Other Libraries</h2> {/* Reduced mb-6 to mb-3 */}
               {/* Main Stacks */}
-              <div className="mb-4">
-                <h2 className="text-lg font-semibold text-center mb-2">Main Stacks</h2>
-                <div className="flex items-center space-x-4">
-                  <span className="w-20 text-center font-medium">Overall</span>
+              <div className="mb-2"> {/* Reduced mb-4 to mb-2 */}
+                <div className="flex items-center space-x-2">
+                  <span className="w-20 text-center font-medium">Stacks</span>
                   <div className="flex-1">
                     <Progress
-                    value={getProgressValue("Main Stacks")}
-                    className="w-full"
+                      value={getProgressValue("Main Stacks")}
+                      className="w-full"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Doe Library */}
-              <div className="mb-4">
-                <h2 className="text-lg font-semibold text-center mb-2">Doe Library</h2>
-                <div className="flex items-center space-x-4">
-                  <span className="w-20 text-center font-medium">Overall</span>
+              <div className="mb-2"> {/* Reduced mb-4 to mb-2 */}
+                <div className="flex items-center space-x-2">
+                  <span className="w-20 text-center font-medium">Doe</span>
                   <div className="flex-1">
                     <Progress
                       value={getProgressValue("Doe Library")}
@@ -244,9 +248,8 @@ export default function HomePage() {
 
               {/* Haas Library */}
               <div>
-                <h2 className="text-lg font-semibold text-center mb-2">Haas Library</h2>
-                <div className="flex items-center space-x-4">
-                  <span className="w-20 text-center font-medium">Overall</span>
+                <div className="flex items-center space-x-2">
+                  <span className="w-20 text-center font-medium">Haas</span>
                   <div className="flex-1">
                     <Progress
                       value={getProgressValue("Haas Library")}
@@ -258,10 +261,12 @@ export default function HomePage() {
             </div>
           </CardContent>
         </Card>
+      </div>
 
-        {/* Recommendations */}
+      {/* Recommendations */}
+      <div className="mt-4"> {/* Reduced margin-top from mt-6 to mt-4 */}
         <Card className="shadow-md w-full mx-auto transition-transform duration-300 hover:scale-105">
-          <CardHeader className="text-left p-6">
+          <CardHeader className="text-left p-4"> {/* Reduced padding from p-6 to p-4 */}
             <CardTitle className="text-xl font-semibold">Recommendations</CardTitle>
           </CardHeader>
           <CardContent className="">
@@ -313,31 +318,31 @@ export default function HomePage() {
             </div>
           </CardContent>
         </Card>
+      </div>
 
-        {/* Thank You Section */}
-        <div>
-          <Card className="shadow-md transition-transform duration-300 hover:scale-105">
-            <CardHeader className="text-left p-6">
-              <CardTitle className="text-xl font-semibold">Library Contributors</CardTitle>
-              <CardDescription className="text-gray-500">
-                A special thanks to our recent contributors:
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {recentUpdaters.length > 0 ? (
-                <ul className="list-disc list-inside">
-                  {recentUpdaters.map((name, index) => (
-                    <li key={index} className="text-lg">
-                      {name}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No recent updates yet.</p>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+      {/* Thank You Section */}
+      <div className="mt-4"> {/* Reduced margin-top from mt-6 to mt-4 */}
+        <Card className="shadow-md w-full mx-auto transition-transform duration-300 hover:scale-105">
+          <CardHeader className="text-left p-4"> {/* Reduced padding from p-6 to p-4 */}
+            <CardTitle className="text-xl font-semibold">Library Contributors</CardTitle>
+            <CardDescription className="text-gray-500 text-sm"> {/* Reduced text size */}
+              A special thanks to our recent contributors:
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {recentUpdaters.length > 0 ? (
+              <ul className="list-disc list-inside">
+                {recentUpdaters.map((name, index) => (
+                  <li key={index} className="text-lg">
+                    {name}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No recent updates yet.</p>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
