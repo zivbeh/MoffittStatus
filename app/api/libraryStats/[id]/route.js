@@ -1,29 +1,47 @@
-// app/api/libraryStats/route.js
-// import fs from 'fs';
-// import path from 'path';
+// app/api/libraryStats/[id]/route.js
+
 import { NextResponse } from 'next/server';
-import db from '../../../../lib/db';
+import db from '../../../../lib/db'; // Ensure this path is correct
 
-
+/**
+ * GET Handler
+ * 
+ * - If `id` is '0', fetch all library stats.
+ * - Otherwise, fetch stats for the specified `libraryName`.
+ */
 export async function GET(req, { params }) {
-    const { libraryId } = params;
-    console.log("param /api/libraryStats/[id]", libraryId, req.body)
-    try {
-        // const connection = await db.getConnection();
-        const [rows] = await db.query('SELECT * FROM libStats');
-        // connection.release();
+  const { id } = params;
 
-        const randomNumber = Math.random();
-        return NextResponse.json({ message: rows, random: randomNumber }, {
-            headers: {
-                'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-                'Pragma': 'no-cache',
-                'Expires': '0',
-                'Surrogate-Control': 'no-store',
-            }
-        });
-    } catch (error) {
-        console.error('Database query error:', error); // Log any errors
-        return NextResponse.json({ error: error });
+  try {
+    let query;
+    let values = [];
+
+    if (id === '0') {
+      // If 'id' is '0', fetch all data
+      query = 'SELECT libraryName, floorID, updatedBy, busyScale, createdAt FROM libStats';
+    } else {
+      // Use 'id' to filter data by libraryName
+      query = 'SELECT libraryName, floorID, updatedBy, busyScale, createdAt FROM libStats WHERE libraryName = ?';
+      values = [id];
     }
+
+    // Execute the query
+    const [rows] = await db.query(query, values);
+
+    // Return the fetched data as JSON
+    return NextResponse.json(
+      { message: rows },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
+          'Surrogate-Control': 'no-store',
+        }
+      }
+    );
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 }

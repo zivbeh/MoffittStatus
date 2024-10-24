@@ -1,17 +1,14 @@
 {
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
+    "baseUrl": ".", // Ensure baseUrl is set for absolute imports
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": false, // Disable since you're using TypeScript exclusively
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "bundler",
+    "moduleResolution": "node", // Ensure moduleResolution is 'node'
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -22,9 +19,7 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     },
     "target": "ES2017"
   },
@@ -34,10 +29,10 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "app/api/saveData/route.js",
-    "components/ui/StatsTable.jsx",
-    "app/updatestatus/page.tsx"
-, "lib/db.js"  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "components/ui/StatsTable.tsx", // Updated to .tsx
+    "app/updatestatus/page.tsx",
+    "lib/db.ts",
+    "lib/utils.ts"
+  ],
+  "exclude": ["node_modules"]
 }

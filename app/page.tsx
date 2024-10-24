@@ -2,7 +2,7 @@
 
 import { AiOutlineInstagram } from "react-icons/ai";
 import { useEffect, useState } from "react";
-import { Progress } from "@/components/ui/progress";
+import { Progress } from '@/components/ui/progress';
 import {
   Card,
   CardContent,
@@ -14,6 +14,7 @@ import {
 import { AcademicCapIcon } from "@heroicons/react/24/outline";
 
 type FloorData = {
+  libraryName: string;
   floorID: string;
   updatedBy: string;
   busyScale: number;
@@ -21,26 +22,30 @@ type FloorData = {
 };
 
 export default function HomePage() {
-  const [floorData, setFloorData] = useState<FloorData[]>([]);
+  const [data, setData] = useState<FloorData[]>([]);
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [leastBusyFloors, setLeastBusyFloors] = useState<string[]>([]);
   const [allFloorsAbove79, setAllFloorsAbove79] = useState<boolean>(false);
-  const [recentUpdaters, setRecentUpdaters] = useState<string[]>([]); // New state variable
+  const [recentUpdaters, setRecentUpdaters] = useState<string[]>([]);
 
   const fetchStatusUpdates = async () => {
     try {
-      const response = await fetch("/api/libraryStats/0", { method: "GET" });
+      const response = await fetch('/api/libraryStats/0', { method: 'GET' });
       if (response.ok) {
-        const data = await response.json();
-        setFloorData(data["message"]);
-        updateLastUpdatedTime(data["message"]);
-        computeLeastBusyFloors(data["message"]);
-        computeRecentUpdaters(data["message"]); // Call the new function
+        const responseData = await response.json();
+        console.log('Fetched data:', responseData);
+        setData(responseData['message']);
+        updateLastUpdatedTime(responseData['message']);
+        computeLeastBusyFloors(responseData['message']);
+        computeRecentUpdaters(responseData['message']);
+      } else {
+        console.error('API response not OK:', response.status);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error('Error fetching data:', error);
     }
   };
+  
 
   const updateLastUpdatedTime = (data: FloorData[]) => {
     if (data.length === 0) {
@@ -80,14 +85,18 @@ export default function HomePage() {
     return () => clearInterval(interval);
   }, []);
 
-  const getProgressValue = (floor: string) => {
-    const floorEntries = floorData
-      .filter((entry) => entry.floorID === floor)
+  const getProgressValue = (library: string, floor?: string) => {
+    const filteredEntries = data
+      .filter(
+        (entry) =>
+          entry.libraryName === library &&
+          (!floor || entry.floorID === floor || entry.floorID === "Overall")
+      )
       .sort(
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
 
-    const latestEntry = floorEntries[0];
+    const latestEntry = filteredEntries[0];
     return latestEntry ? Number(latestEntry.busyScale) * 20 : 0;
   };
 
@@ -99,7 +108,10 @@ export default function HomePage() {
 
     floorIDs.forEach((floorID) => {
       const floorEntries = data
-        .filter((entry) => entry.floorID === floorID)
+        .filter(
+          (entry) =>
+            entry.libraryName === "Moffitt Library" && entry.floorID === floorID
+        )
         .sort(
           (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
         );
@@ -129,7 +141,6 @@ export default function HomePage() {
     setAllFloorsAbove79(allAbove79);
   };
 
-  // New function to compute recent updaters
   const computeRecentUpdaters = (data: FloorData[]) => {
     const sortedData = data.sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -160,9 +171,7 @@ export default function HomePage() {
       {/* Header Section */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center">
-          <AcademicCapIcon
-            className="h-10 w-10 mr-4 transition-transform duration-300 hover:scale-110 bg-gradient-to-r from-black to-white bg-clip-text"
-          />
+          <AcademicCapIcon className="h-10 w-10 mr-4 transition-transform duration-300 hover:scale-110 bg-gradient-to-r from-black to-white bg-clip-text" />
           <h1 className="text-3xl font-bold transition-transform duration-300 hover:scale-105">
             MoffittStatus
           </h1>
@@ -184,18 +193,53 @@ export default function HomePage() {
       <div className="flex flex-col gap-6">
         <Card className="shadow-md transition-transform duration-300 hover:scale-105">
           <CardHeader className="text-left p-6">
-            <CardTitle className="text-xl font-semibold">Floor Breakdown</CardTitle>
+            <CardTitle className="text-xl font-semibold">Library Status</CardTitle>
             <CardDescription className="text-gray-500">{lastUpdated}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6 mt-2 mb-4">
-            {["Floor 1", "Floor 3", "Floor 4", "Floor 5"].map((floor) => (
-              <div key={floor} className="flex items-center space-x-4">
-                <span className="w-20 text-center font-medium">{floor}</span>
+            {/* Moffitt Library Floors */}
+            <div>
+              <h2 className="text-lg font-semibold mb-2">Moffitt Library</h2>
+              {["Floor 1", "Floor 3", "Floor 4", "Floor 5"].map((floor) => (
+                <div key={floor} className="flex items-center space-x-4">
+                  <span className="w-20 text-center font-medium">{floor}</span>
+                  <div className="flex-1">
+                    <Progress
+                      value={getProgressValue("Moffitt Library", floor)}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Doe Library */}
+            <div>
+              <h2 className="text-lg font-semibold mb-2">Doe Library</h2>
+              <div className="flex items-center space-x-4">
+                <span className="w-20 text-center font-medium">Overall</span>
                 <div className="flex-1">
-                  <Progress value={getProgressValue(floor)} className="w-full" />
+                  <Progress
+                    value={getProgressValue("Doe Library")}
+                    className="w-full"
+                  />
                 </div>
               </div>
-            ))}
+            </div>
+
+            {/* Haas Library */}
+            <div>
+              <h2 className="text-lg font-semibold mb-2">Haas Library</h2>
+              <div className="flex items-center space-x-4">
+                <span className="w-20 text-center font-medium">Overall</span>
+                <div className="flex-1">
+                  <Progress
+                    value={getProgressValue("Haas Library")}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -211,13 +255,21 @@ export default function HomePage() {
                 <strong>For Solo People:</strong>{" "}
                 {leastBusyFloors.length > 0 ? (
                   <>
-                    We recommend <strong>{formatFloors(leastBusyFloors)}</strong>{" "}
-                    as it’s currently the least busy!
+                    We recommend <strong>{formatFloors(leastBusyFloors)}</strong> in
+                    Moffitt Library as it’s currently the least busy!
                   </>
                 ) : (
                   <>
-                    All floors are at full capacity. We recommend studying at{" "}
-                    <strong>Haas Library</strong> or <strong>Doe Library</strong>.
+                    All floors in Moffitt Library are at full capacity. Consider
+                    studying at{" "}
+                    <strong>
+                      {getProgressValue("Doe Library") < 80
+                        ? "Doe Library"
+                        : getProgressValue("Haas Library") < 80
+                        ? "Haas Library"
+                        : "another location"}
+                    </strong>
+                    .
                   </>
                 )}
               </p>
@@ -226,13 +278,20 @@ export default function HomePage() {
                 <strong>For Groups:</strong>{" "}
                 {allFloorsAbove79 || leastBusyFloors.length === 0 ? (
                   <>
-                    All floors are quite busy. We recommend going to{" "}
-                    <strong>Haas Library</strong> or <strong>Doe Library</strong>.
+                    All floors in Moffitt Library are quite busy. We recommend going to{" "}
+                    <strong>
+                      {getProgressValue("Doe Library") < 80
+                        ? "Doe Library"
+                        : getProgressValue("Haas Library") < 80
+                        ? "Haas Library"
+                        : "another location"}
+                    </strong>
+                    .
                   </>
                 ) : (
                   <>
-                    We recommend <strong>{formatFloors(leastBusyFloors)}</strong>{" "}
-                    as it’s currently the least busy!
+                    We recommend <strong>{formatFloors(leastBusyFloors)}</strong> in
+                    Moffitt Library as it’s currently the least busy!
                   </>
                 )}
               </p>
@@ -244,7 +303,7 @@ export default function HomePage() {
         <div className="mt-8">
           <Card className="shadow-md transition-transform duration-300 hover:scale-105">
             <CardHeader className="text-left p-6">
-              <CardTitle className="text-xl font-semibold">Moffitt Demons!</CardTitle>
+              <CardTitle className="text-xl font-semibold">Library Contributors</CardTitle>
               <CardDescription className="text-gray-500">
                 A special thanks to our recent contributors:
               </CardDescription>

@@ -5,7 +5,7 @@ import { AcademicCapIcon } from "@heroicons/react/24/outline";
 import { Slider } from "@/components/ui/slider";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, useWatch } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   FormControl,
@@ -23,9 +23,13 @@ const FormMessage: React.FC<FormMessageProps> = ({ error }) => (
 );
 
 const formSchema = z.object({
-  floor: z.enum(["Floor 1", "Floor 3", "Floor 4", "Floor 5"], {
-    required_error: "Please select a valid floor.",
+  libraryName: z.enum(["Moffitt Library", "Doe Library", "Haas Library"], {
+    required_error: "Please select a library.",
   }),
+  floor: z
+    .enum(["Floor 1", "Floor 3", "Floor 4", "Floor 5"])
+    .optional()
+    .nullable(),
   busyScale: z.enum(["1", "2", "3", "4", "5"], {
     required_error: "Please provide a valid busy scale.",
   }),
@@ -35,22 +39,34 @@ const formSchema = z.object({
     .nonempty("Please enter your name or @."),
 });
 
-
-
 const UpdateForm = () => {
   const methods = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      libraryName: "Moffitt Library",
       floor: "Floor 1",
       busyScale: "3",
       updatedBy: "Anonymous",
-    },    
+    },
   });
 
-  const { handleSubmit, formState: { errors } } = methods;
+  const {
+    handleSubmit,
+    formState: { errors },
+  } = methods;
+
+  const selectedLibrary = useWatch({
+    control: methods.control,
+    name: "libraryName",
+  });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const currentTime = new Date().toISOString();
+
+    // For Haas and Doe Libraries, set floor to null
+    if (values.libraryName !== "Moffitt Library") {
+      values.floor = null;
+    }
 
     const dataToSubmit = {
       ...values,
@@ -64,7 +80,7 @@ const UpdateForm = () => {
       },
       body: JSON.stringify(dataToSubmit),
     });
-    console.log(dataToSubmit)
+    console.log(dataToSubmit);
     if (res.ok) {
       alert("Data saved successfully!");
     } else {
@@ -77,9 +93,7 @@ const UpdateForm = () => {
       {/* Header Section */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
-          <AcademicCapIcon
-            className="h-10 w-10 mr-4 transition-transform duration-300 hover:scale-110 bg-gradient-to-r from-black to-white bg-clip-text"
-          />
+          <AcademicCapIcon className="h-10 w-10 mr-4 transition-transform duration-300 hover:scale-110 bg-gradient-to-r from-black to-white bg-clip-text" />
           <h1 className="text-3xl font-bold transition-transform duration-300 hover:scale-105">
             MoffittStatus
           </h1>
@@ -103,36 +117,71 @@ const UpdateForm = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="mt-20 space-y-6 bg-white shadow-md p-6 rounded-lg max-w-md w-full mx-auto"
         >
-          {/* Floor Field */}
+          {/* Library Field */}
           <FormField
-          control={methods.control}
-          name="floor"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>What floor are you on?</FormLabel>
-              <FormControl>
-                <div className="flex justify-center gap-2 mt-2">
-                  {["Floor 1", "Floor 3", "Floor 4", "Floor 5"].map((floorLabel) => (
-                    <Button
-                      key={floorLabel}
-                      type="button"
-                      className={`px-4 py-2 rounded-md transition-all duration-300 ${
-                        field.value === floorLabel
-                          ? "bg-gray-700 text-white"
-                          : "bg-gray-300 text-black hover:bg-gray-400"
-                      }`}
-                      onClick={() => field.onChange(floorLabel)}
-                    >
-                      {floorLabel}
-                    </Button>
-                  ))}
-                </div>
-              </FormControl>
-              <FormMessage error={errors.floor?.message} />
-            </FormItem>
-          )}
-        />
+            control={methods.control}
+            name="libraryName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Select Library</FormLabel>
+                <FormControl>
+                  <div className="flex justify-center gap-2 mt-2">
+                    {["Moffitt Library", "Doe Library", "Haas Library"].map(
+                      (libraryName) => (
+                        <Button
+                          key={libraryName}
+                          type="button"
+                          className={`px-4 py-2 rounded-md transition-all duration-300 ${
+                            field.value === libraryName
+                              ? "bg-gray-700 text-white"
+                              : "bg-gray-300 text-black hover:bg-gray-400"
+                          }`}
+                          onClick={() => field.onChange(libraryName)}
+                        >
+                          {libraryName}
+                        </Button>
+                      )
+                    )}
+                  </div>
+                </FormControl>
+                <FormMessage error={errors.libraryName?.message} />
+              </FormItem>
+            )}
+          />
 
+          {/* Conditionally Render Floor Field */}
+          {selectedLibrary === "Moffitt Library" && (
+            <FormField
+              control={methods.control}
+              name="floor"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>What floor are you on?</FormLabel>
+                  <FormControl>
+                    <div className="flex justify-center gap-2 mt-2">
+                      {["Floor 1", "Floor 3", "Floor 4", "Floor 5"].map(
+                        (floorLabel) => (
+                          <Button
+                            key={floorLabel}
+                            type="button"
+                            className={`px-4 py-2 rounded-md transition-all duration-300 ${
+                              field.value === floorLabel
+                                ? "bg-gray-700 text-white"
+                                : "bg-gray-300 text-black hover:bg-gray-400"
+                            }`}
+                            onClick={() => field.onChange(floorLabel)}
+                          >
+                            {floorLabel}
+                          </Button>
+                        )
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormMessage error={errors.floor?.message} />
+                </FormItem>
+              )}
+            />
+          )}
 
           {/* Busy Scale Field */}
           <FormField
@@ -149,7 +198,9 @@ const UpdateForm = () => {
                       max={5}
                       step={1}
                       defaultValue={[3]}
-                      onValueChange={(value) => field.onChange(String(value[0]))}
+                      onValueChange={(value) =>
+                        field.onChange(String(value[0]))
+                      }
                       className="w-full"
                     />
                     <div className="mt-2 text-sm text-gray-600 text-center">
@@ -166,6 +217,7 @@ const UpdateForm = () => {
               </FormItem>
             )}
           />
+
           {/* Updated By Field */}
           <FormField
             control={methods.control}
