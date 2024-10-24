@@ -213,11 +213,24 @@ export default function HomePage() {
               ))}
             </div>
 
+            {/* Main Stacks */}
+            <div>
+              <div className="flex items-center space-x-4">
+                <span className="w-20 text-center font-medium">Main Stacks</span>
+                <div className="flex-1">
+                  <Progress
+                    value={getProgressValue("Main Stacks")}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+
+
             {/* Doe Library */}
             <div>
-              <h2 className="text-lg font-semibold mb-2">Doe Library</h2>
               <div className="flex items-center space-x-4">
-                <span className="w-20 text-center font-medium">Overall</span>
+                <span className="w-20 text-center font-medium">Doe</span>
                 <div className="flex-1">
                   <Progress
                     value={getProgressValue("Doe Library")}
@@ -229,9 +242,8 @@ export default function HomePage() {
 
             {/* Haas Library */}
             <div>
-              <h2 className="text-lg font-semibold mb-2">Haas Library</h2>
               <div className="flex items-center space-x-4">
-                <span className="w-20 text-center font-medium">Overall</span>
+                <span className="w-20 text-center font-medium">Haas</span>
                 <div className="flex-1">
                   <Progress
                     value={getProgressValue("Haas Library")}
@@ -242,6 +254,7 @@ export default function HomePage() {
             </div>
           </CardContent>
         </Card>
+      </div>
 
         {/* Recommendations */}
         <Card className="shadow-md w-full mx-auto transition-transform duration-300 hover:scale-105">
@@ -324,6 +337,6 @@ export default function HomePage() {
           </Card>
         </div>
       </div>
-    </div>
+
   );
 }

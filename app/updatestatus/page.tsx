@@ -23,7 +23,7 @@ const FormMessage: React.FC<FormMessageProps> = ({ error }) => (
 );
 
 const formSchema = z.object({
-  libraryName: z.enum(["Moffitt Library", "Doe Library", "Haas Library"], {
+  libraryName: z.enum(["Moffitt Library", "Doe Library", "Haas Library", "Main Stacks"], {
     required_error: "Please select a library.",
   }),
   floor: z
@@ -126,7 +126,7 @@ const UpdateForm = () => {
                 <FormLabel>Select Library</FormLabel>
                 <FormControl>
                   <div className="flex justify-center gap-2 mt-2">
-                    {["Moffitt Library", "Doe Library", "Haas Library"].map(
+                    {["Moffitt Library", "Doe Library", "Haas Library", "Main Stacks"].map(
                       (libraryName) => (
                         <Button
                           key={libraryName}
