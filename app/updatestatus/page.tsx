@@ -159,7 +159,7 @@ const UpdateForm = () => {
                   <FormLabel>What floor are you on?</FormLabel>
                   <FormControl>
                     <div className="flex flex-wrap justify-center gap-2 mt-2">
-                      {["Floor 1", "Floor 2", "Floor 3", "Floor 4", "Floor 5"].map(
+                      {["Floor 1", "Floor 3", "Floor 4", "Floor 5"].map(
                         (floorLabel) => (
                           <Button
                             key={floorLabel}

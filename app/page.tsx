@@ -168,7 +168,7 @@ export default function HomePage() {
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center">
           <AcademicCapIcon className="h-10 w-10 mr-4 transition-transform duration-300 hover:scale-110 bg-gradient-to-r from-black to-white bg-clip-text" />
-          <h1 className="text-3xl font-bold transition-transform duration-300 hover:scale-105">
+          <h1 className="text-3xl font-bold transition-transform duration-300 hover:scale-105 sm:hover:scale-103">
             MoffittStatus
           </h1>
         </div>
@@ -187,7 +187,7 @@ export default function HomePage() {
 
       {/* Floor Breakdown */}
       <div className="w-full flex flex-col gap-6">
-        <Card className="shadow-md transition-transform duration-300 hover:scale-105">
+        <Card className="shadow-md transition-transform duration-300 hover:scale-105 sm:hover:scale-103">
           <CardHeader className="text-left p-4"> {/* Reduced padding from p-6 to p-4 */}
             <CardTitle className="text-xl font-semibold">Library Status</CardTitle>
             <CardDescription className="text-gray-500 text-sm"> {/* Reduced text size */}
@@ -265,7 +265,7 @@ export default function HomePage() {
 
       {/* Recommendations */}
       <div className="mt-4"> {/* Reduced margin-top from mt-6 to mt-4 */}
-        <Card className="shadow-md w-full mx-auto transition-transform duration-300 hover:scale-105">
+        <Card className="shadow-md w-full mx-auto transition-transform duration-300 hover:scale-105 sm:hover:scale-103">
           <CardHeader className="text-left p-4"> {/* Reduced padding from p-6 to p-4 */}
             <CardTitle className="text-xl font-semibold">Recommendations</CardTitle>
           </CardHeader>
@@ -273,15 +273,15 @@ export default function HomePage() {
             <div className="space-y-4">
               {/* Solo Recommendation */}
               <p className="text-left text-lg">
-                <strong>For Solo Studying:</strong>{" "}
+                <strong>For Individuals:</strong>{" "}
                 {leastBusyFloors.length > 0 ? (
                   <>
-                    We recommend <strong>{formatFloors(leastBusyFloors)}</strong> in
-                    Moffitt Library as it’s currently the least busy!
+                    Go to <strong>{formatFloors(leastBusyFloors)}</strong> in
+                    Moffitt Library
                   </>
                 ) : (
                   <>
-                    All floors in Moffitt Library are quite busy. Consider studying at{" "}
+                    All floors in Moffitt are busy. Consider studying at{" "}
                     <strong>
                       {getProgressValue("Doe Library") < 80
                         ? "Doe Library"
@@ -298,7 +298,7 @@ export default function HomePage() {
                 <strong>For Groups:</strong>{" "}
                 {allFloorsAbove79 || leastBusyFloors.length === 0 ? (
                   <>
-                    All floors in Moffitt Library are quite busy. We recommend going to{" "}
+                    All floors in Moffitt are busy. Go to{" "}
                     <strong>
                       {getProgressValue("Doe Library") < 80
                         ? "Doe Library"
@@ -310,8 +310,8 @@ export default function HomePage() {
                   </>
                 ) : (
                   <>
-                    We recommend <strong>{formatFloors(leastBusyFloors)}</strong> in
-                    Moffitt Library as it’s currently the least busy!
+                    Go to <strong>{formatFloors(leastBusyFloors)}</strong> in
+                    Moffitt Library
                   </>
                 )}
               </p>
@@ -321,8 +321,8 @@ export default function HomePage() {
       </div>
 
       {/* Thank You Section */}
-      <div className="mt-4"> {/* Reduced margin-top from mt-6 to mt-4 */}
-        <Card className="shadow-md w-full mx-auto transition-transform duration-300 hover:scale-105">
+      <div className="mt-4 mb-5"> {/* Reduced margin-top from mt-6 to mt-4 */}
+        <Card className="shadow-md w-full mx-auto transition-transform duration-300 hover:scale-105 sm:hover:scale-103">
           <CardHeader className="text-left p-4"> {/* Reduced padding from p-6 to p-4 */}
             <CardTitle className="text-xl font-semibold">Library Contributors</CardTitle>
             <CardDescription className="text-gray-500 text-sm"> {/* Reduced text size */}
