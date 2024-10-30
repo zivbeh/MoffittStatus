@@ -145,7 +145,7 @@ export default function FoodLine() {
                 <div className="flex-1">
                   <Progress value={mlkProgress} className="w-full" />
                 </div>
-                <span className="w-16 text-right font-medium">{mlkProgress}%</span>
+                <span className="w-16 text-right font-medium">{mlkProgress-3}%</span>
               </div>
             </div>
           </CardContent>
