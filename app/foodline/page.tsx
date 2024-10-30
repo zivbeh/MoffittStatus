@@ -22,33 +22,76 @@ import { Progress } from "@/components/ui/progress";
 export default function FoodLine() {
   const [gbcProgress, setGbcProgress] = useState(100);
   const [mlkProgress, setMlkProgress] = useState(100);
+  const [isGbcOpen, setIsGbcOpen] = useState(false);
+  const [isMlkOpen, setIsMlkOpen] = useState(false);
+
+  const checkIfGbcOpen = () => {
+    const now = new Date();
+    const day = now.getDay();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const currentTime = hours + minutes/60;
+
+    return day >= 1 && day <= 5 && currentTime >= 7.5 && currentTime < 19;
+  };
+
+  const checkIfMlkOpen = () => {
+    const now = new Date();
+    const day = now.getDay();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const currentTime = hours + minutes/60;
+
+    return day >= 1 && day <= 5 && currentTime >= 11 && currentTime < 18;
+  };
+
+  const progressToWaitTime = (progress: number): number => {
+    if (progress >= 100) return 15;
+    if (progress >= 80) return Math.round(10 + ((progress - 80) * 0.25)); // 80-100: 10-15 mins
+    if (progress >= 60) return Math.round(5 + ((progress - 60) * 0.25));  // 60-80: 5-10 mins
+    if (progress >= 40) return Math.round(3 + ((progress - 40) * 0.1));   // 40-60: 3-5 mins
+    if (progress >= 20) return Math.round((progress - 20) * 0.15);        // 20-40: 0-3 mins
+    return 0;
+  };
 
   useEffect(() => {
-    // Function to calculate current progress based on minutes elapsed
     const calculateProgress = () => {
       const now = new Date();
       const currentMinutes = now.getMinutes();
       
+      // Update open/closed status
+      setIsGbcOpen(checkIfGbcOpen());
+      setIsMlkOpen(checkIfMlkOpen());
+      
       let currentProgress;
-      if (currentMinutes <= 10) {
-        // First 10 minutes: 100 to 80 (2% per minute)
-        currentProgress = 100 - (currentMinutes * 2);
-      } else if (currentMinutes <= 20) {
-        // Next 10 minutes: 80 to 50 (3% per minute)
-        currentProgress = 80 - ((currentMinutes - 10) * 3);
-      } else if (currentMinutes <= 30) {
-        // Next 10 minutes: 50 to 25 (2.5% per minute)
-        currentProgress = 50 - ((currentMinutes - 20) * 2.5);
+      if (currentMinutes === 0) {
+        currentProgress = 50;
+      } else if (currentMinutes <= 10) {
+        currentProgress = 50 + (currentMinutes * 5);
+      } else if (currentMinutes <= 13) {
+        currentProgress = 100 - ((currentMinutes - 10) * (10/3));
+      } else if (currentMinutes <= 17) {
+        currentProgress = 90 - ((currentMinutes - 13) * 10);
+      } else if (currentMinutes <= 22) {
+        currentProgress = 50 - ((currentMinutes - 17) * 6);
+      } else if (currentMinutes <= 40) {
+        currentProgress = 20;
+      } else if (currentMinutes <= 50) {
+        currentProgress = 20 + ((currentMinutes - 40) * 3);
       } else {
-        // After 30 minutes: minimum of 5
-        currentProgress = 5;
+        currentProgress = 50;
       }
       
-      setGbcProgress(Math.max(5, currentProgress));
-      setMlkProgress(Math.max(5, currentProgress));
+      // Only update progress if locations are open
+      if (checkIfGbcOpen()) {
+        setGbcProgress(Math.round(currentProgress));
+      }
+      if (checkIfMlkOpen()) {
+        setMlkProgress(Math.round(currentProgress));
+      }
     };
 
-    // Calculate initial progress immediately when component mounts
+    // Calculate initial progress
     calculateProgress();
 
     // Set up interval to update every minute
@@ -61,13 +104,15 @@ export default function FoodLine() {
 
     // Set up reset for next hour
     const resetTimeout = setTimeout(() => {
-      setGbcProgress(100);
-      setMlkProgress(100);
+      if (checkIfGbcOpen()) setGbcProgress(100);
+      if (checkIfMlkOpen()) setMlkProgress(100);
+      
       // Set up recurring hourly reset
       const hourlyReset = setInterval(() => {
-        setGbcProgress(100);
-        setMlkProgress(100);
-      }, 3600000); // Every hour
+        if (checkIfGbcOpen()) setGbcProgress(100);
+        if (checkIfMlkOpen()) setMlkProgress(100);
+      }, 3600000);
+      
       return () => clearInterval(hourlyReset);
     }, secondsUntilNextHour * 1000);
 
@@ -113,7 +158,7 @@ export default function FoodLine() {
       {/* Thin Divider */}
       <div className="w-full h-[1px] bg-gray-300 mb-5"></div>
 
-      {/* Existing Food Line Content */}
+      {/* Food Line Content */}
       <div className="w-full flex flex-col gap-6">
         <Card className="shadow-md transition-transform duration-300 hover:scale-105 sm:hover:scale-103">
           <CardHeader className="text-left p-4">
@@ -124,10 +169,24 @@ export default function FoodLine() {
             <div className="flex-1">
               <div className="flex items-center space-x-2 mb-2">
                 <span className="w-20 text-center font-medium">GBC</span>
-                <div className="flex-1">
-                  <Progress value={gbcProgress} className="w-full" />
-                </div>
-                <span className="w-16 text-right font-medium">{gbcProgress}%</span>
+                {isGbcOpen ? (
+                  <>
+                    <div className="flex-1">
+                      <Progress value={gbcProgress} className="w-full" />
+                    </div>
+                    <span className="w-32 text-right font-medium">
+                      est. {progressToWaitTime(gbcProgress)} min wait
+                    </span>
+                  </>
+                ) : (
+                  <div className="flex-1 text-gray-500 text-sm">
+                    Golden Bear Cafe is currently closed.
+                    <br />
+                    Hours: Monday-Friday 7:30 AM - 7:00 PM
+                    <br />
+                    Closed Weekends
+                  </div>
+                )}
               </div>
             </div>
 
@@ -138,10 +197,24 @@ export default function FoodLine() {
             <div className="flex-1">
               <div className="flex items-center space-x-2 mb-2">
                 <span className="w-20 text-center font-medium">MLK</span>
-                <div className="flex-1">
-                  <Progress value={mlkProgress} className="w-full" />
-                </div>
-                <span className="w-16 text-right font-medium">{mlkProgress-3}%</span>
+                {isMlkOpen ? (
+                  <>
+                    <div className="flex-1">
+                      <Progress value={mlkProgress} className="w-full" />
+                    </div>
+                    <span className="w-32 text-right font-medium">
+                      est. {progressToWaitTime(mlkProgress)} min wait
+                    </span>
+                  </>
+                ) : (
+                  <div className="flex-1 text-gray-500 text-sm">
+                    MLK Cafe is currently closed.
+                    <br />
+                    Hours: Monday-Friday 11:00 AM - 6:00 PM
+                    <br />
+                    Closed Weekends
+                  </div>
+                )}
               </div>
             </div>
           </CardContent>
