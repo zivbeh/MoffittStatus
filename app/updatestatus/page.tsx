@@ -2,19 +2,6 @@
 
 import Link from "next/link";
 
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-} from "@/components/ui/navigation-menu"
-
-import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
-
 
 import { AiOutlineInstagram } from "react-icons/ai";
 import { AcademicCapIcon } from "@heroicons/react/24/outline";
