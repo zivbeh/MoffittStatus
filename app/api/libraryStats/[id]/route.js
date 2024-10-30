@@ -14,7 +14,7 @@ export async function GET(req, { params }) {
 
     try {
         let query;
-        let values = [];
+        let values = []; // ac /api/feedback POST
 
         if (id === '0') {
             // If 'id' is '0', fetch all data
