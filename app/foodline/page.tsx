@@ -18,12 +18,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast"
+
 
 export default function FoodLine() {
+  const { toast } = useToast();
   const [gbcProgress, setGbcProgress] = useState(100);
   const [mlkProgress, setMlkProgress] = useState(100);
   const [isGbcOpen, setIsGbcOpen] = useState(false);
   const [isMlkOpen, setIsMlkOpen] = useState(false);
+  const [feedbackText, setFeedbackText] = useState("");
+  const [hasFeedback, setHasFeedback] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState<boolean | null>(null);
 
   const checkIfGbcOpen = () => {
     const now = new Date();
@@ -54,6 +62,23 @@ export default function FoodLine() {
     return 0;
   };
 
+  const getMorningScale = (): number => {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const currentTime = hours + minutes/60;
+
+    // Before 7am or after 10am
+    if (currentTime < 7 || currentTime >= 10) {
+      return 1; // Full scale
+    }
+    
+    // Between 7am and 10am
+    // Start at 0.5 (50%) at 7am, reach 1.0 (100%) at 10am
+    const progress = (currentTime - 7) / 3; // 3 hours between 7 and 10
+    return 0.5 + (progress * 0.5); // Scale from 0.5 to 1.0
+  };
+
   useEffect(() => {
     const calculateProgress = () => {
       const now = new Date();
@@ -82,10 +107,13 @@ export default function FoodLine() {
         currentProgress = 50;
       }
       
-      // Only update progress if locations are open
+      // Scale GBC progress before 10am
       if (checkIfGbcOpen()) {
-        setGbcProgress(Math.round(currentProgress));
+        const scale = getMorningScale();
+        setGbcProgress(Math.round(currentProgress * scale));
       }
+      
+      // MLK progress remains unchanged
       if (checkIfMlkOpen()) {
         setMlkProgress(Math.round(currentProgress));
       }
@@ -121,6 +149,47 @@ export default function FoodLine() {
       clearTimeout(resetTimeout);
     };
   }, []);
+
+  const handleFeedbackSelection = (isAccurate: boolean) => {
+    setSelectedFeedback(isAccurate);
+  };
+
+  const handleSubmit = async () => {
+    if (selectedFeedback === null) return;
+    await handleFeedback(selectedFeedback);
+  };
+
+  const handleFeedback = async (isAccurate: boolean) => {
+    try {
+      const response = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          accurate: isAccurate,
+          feedback_text: feedbackText,
+          created_at: new Date().toISOString()
+        })
+      });
+
+      if (response.ok) {
+        setHasFeedback(true);
+        setFeedbackText("");
+        toast({
+          title: "Thank you!",
+          description: "Your feedback helps us improve our wait time estimates.",
+        });
+      }
+    } catch (error) {
+      console.error('Feedback submission error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to submit feedback. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 mt-5">
@@ -220,6 +289,57 @@ export default function FoodLine() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Feedback Card */}
+      <Card className="shadow-md mt-4">
+        {!hasFeedback ? (
+          <>
+            <CardHeader>
+              <CardTitle>Was this wait time accurate?</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-4">
+                <div className="flex gap-4 justify-center">
+                  <Button 
+                    variant={selectedFeedback === true ? "default" : "outline"}
+                    onClick={() => handleFeedbackSelection(true)}
+                  >
+                    Yes
+                  </Button>
+                  <Button 
+                    variant={selectedFeedback === false ? "default" : "outline"}
+                    onClick={() => handleFeedbackSelection(false)}
+                  >
+                    No
+                  </Button>
+                </div>
+                
+                <div className="space-y-2">
+                  <Textarea
+                    placeholder="Additional feedback (optional)"
+                    value={feedbackText}
+                    onChange={(e) => setFeedbackText(e.target.value)}
+                    className="min-h-[100px]"
+                  />
+                </div>
+
+                <Button 
+                  className="w-full"
+                  disabled={selectedFeedback === null}
+                  onClick={handleSubmit}
+                >
+                  Submit Feedback
+                </Button>
+              </div>
+            </CardContent>
+          </>
+        ) : (
+          <CardContent className="text-center py-6">
+            <h3 className="text-lg font-semibold mb-2">Thank you for your feedback!</h3>
+            <p className="text-muted-foreground">Your response helps us improve our wait time estimates.</p>
+          </CardContent>
+        )}
+      </Card>
     </div>
   );
 }
