@@ -1,5 +1,18 @@
 "use client";
 
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+} from "@/components/ui/navigation-menu"
+
+import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
+
 import { AiOutlineInstagram } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { Progress } from '@/components/ui/progress';
@@ -12,6 +25,7 @@ import {
 } from "@/components/ui/card";
 
 import { AcademicCapIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 
 type FloorData = {
   libraryName: string;
@@ -171,6 +185,17 @@ export default function HomePage() {
           <h1 className="text-3xl font-bold transition-transform duration-300 hover:scale-105 sm:hover:scale-103">
             MoffittStatus
           </h1>
+        </div>
+        <div>
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <Link href="/foodline" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>Food Line</NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+            </NavigationMenuList> 
+          </NavigationMenu>
         </div>
         <a
           href="https://www.instagram.com/moffittstatus"

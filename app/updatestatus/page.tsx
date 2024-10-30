@@ -1,4 +1,7 @@
 "use client";
+
+import Link from "next/link";
+
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -105,11 +108,13 @@ const UpdateForm = () => {
     <div className="container mx-auto px-4 py-10 bg-white">
       {/* Header Section */}
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center">
+        <div>
+          <Link href="/" className="flex items-center">
           <AcademicCapIcon className="h-10 w-10 mr-4 transition-transform duration-300 hover:scale-110 bg-gradient-to-r from-black to-white bg-clip-text" />
           <h1 className="text-3xl font-bold transition-transform duration-300 hover:scale-105">
             MoffittStatus
           </h1>
+          </Link>
         </div>
         <a
           href="https://www.instagram.com/moffittstatus"
