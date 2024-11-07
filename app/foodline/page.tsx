@@ -54,8 +54,8 @@ export default function FoodLine() {
   };
 
   const progressToWaitTime = (progress: number): number => {
-    if (progress >= 100) return 15;
-    if (progress >= 80) return Math.round(10 + ((progress - 80) * 0.25)); // 80-100: 10-15 mins
+    if (progress >= 100) return 10;
+    if (progress >= 80) return Math.round(9 + ((progress - 80) * 0.25)); // 80-100: 9-15 mins
     if (progress >= 60) return Math.round(5 + ((progress - 60) * 0.25));  // 60-80: 5-10 mins
     if (progress >= 40) return Math.round(3 + ((progress - 40) * 0.1));   // 40-60: 3-5 mins
     if (progress >= 20) return Math.round((progress - 20) * 0.15);        // 20-40: 0-3 mins
@@ -83,41 +83,54 @@ export default function FoodLine() {
     const calculateProgress = () => {
       const now = new Date();
       const currentMinutes = now.getMinutes();
+      const currentHours = now.getHours();
       
       // Update open/closed status
       setIsGbcOpen(checkIfGbcOpen());
       setIsMlkOpen(checkIfMlkOpen());
-      
+    
       let currentProgress;
-      if (currentMinutes === 0) {
-        currentProgress = 50;
-      } else if (currentMinutes <= 10) {
-        currentProgress = 50 + (currentMinutes * 5);
-      } else if (currentMinutes <= 13) {
-        currentProgress = 100 - ((currentMinutes - 10) * (10/3));
-      } else if (currentMinutes <= 17) {
-        currentProgress = 90 - ((currentMinutes - 13) * 10);
-      } else if (currentMinutes <= 22) {
-        currentProgress = 50 - ((currentMinutes - 17) * 6);
-      } else if (currentMinutes <= 40) {
-        currentProgress = 20;
-      } else if (currentMinutes <= 50) {
-        currentProgress = 20 + ((currentMinutes - 40) * 3);
+    
+      // Only calculate progress between 12:00 PM and 4:00 PM with added randomness
+      if (currentHours >= 12 && currentHours < 16) {
+        if (currentMinutes === 0) {
+          currentProgress = 50 + getRandomAdjustment(); // ~3-5 mins wait time
+        } else if (currentMinutes <= 10) {
+          currentProgress = 50 + (currentMinutes * 5) + getRandomAdjustment(); // Progress 50-100: ~3-15 mins wait time
+        } else if (currentMinutes <= 13) {
+          currentProgress = 100 - ((currentMinutes - 10) * (10 / 3)) + getRandomAdjustment(); // Progress ~90-100: ~10-15 mins wait time
+        } else if (currentMinutes <= 17) {
+          currentProgress = 90 - ((currentMinutes - 13) * 10) + getRandomAdjustment(); // Progress ~50-90: ~5-10 mins wait time
+        } else if (currentMinutes <= 22) {
+          currentProgress = 50 - ((currentMinutes - 17) * 6) + getRandomAdjustment(); // Progress ~20-50: ~0-5 mins wait time
+        } else if (currentMinutes <= 40) {
+          currentProgress = 20 + getRandomAdjustment(); // ~0-3 mins wait time
+        } else if (currentMinutes <= 50) {
+          currentProgress = 20 + ((currentMinutes - 40) * 3) + getRandomAdjustment(); // Progress 20-50: ~0-5 mins wait time
+        } else {
+          currentProgress = 50 + getRandomAdjustment(); // ~3-5 mins wait time
+        }
       } else {
-        currentProgress = 50;
+        // Set progress to a random value between 1 and 3 minutes
+        currentProgress = 20 + Math.floor(Math.random() * 21);
       }
-      
+    
       // Scale GBC progress before 10am
       if (checkIfGbcOpen()) {
         const scale = getMorningScale();
         setGbcProgress(Math.round(currentProgress * scale));
       }
-      
+    
       // MLK progress remains unchanged
       if (checkIfMlkOpen()) {
         setMlkProgress(Math.round(currentProgress));
       }
     };
+    
+    // Helper function to add a small random adjustment between -3 and +3
+    const getRandomAdjustment = () => {
+      return Math.floor(Math.random() * 40) - 20;
+    };    
 
     // Calculate initial progress
     calculateProgress();
