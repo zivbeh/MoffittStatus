@@ -110,21 +110,22 @@ export function LibraryHours() {
 
         const parseTime = (timeStr: string) => {
           const [time, modifier] = timeStr.split(" ");
-          let [hours, minutes] = time.split(":").map(Number);
+          const [hours, minutes] = time.split(":").map(Number);
 
+          let finalHours = hours;
           if (modifier === "PM" && hours !== 12) {
-            hours += 12;
+            finalHours += 12;
           } else if (modifier === "AM" && hours === 12) {
-            hours = 0;
+            finalHours = 0;
           }
 
           const date = new Date();
-          date.setHours(hours, minutes, 0, 0);
+          date.setHours(finalHours, minutes, 0, 0);
           return date;
         };
 
         const openTime = parseTime(openTimeStr);
-        let closeTime = parseTime(closeTimeStr);
+        const closeTime = parseTime(closeTimeStr);
 
         // Adjust for overnight hours
         if (closeTime <= openTime) {
@@ -154,7 +155,7 @@ export function LibraryHours() {
           <TableHeader>
             <TableRow>
               <TableHead>Library Name</TableHead>
-              <TableHead>Today's Hours</TableHead>
+              <TableHead>Today&apos;s Hours</TableHead>
               <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
