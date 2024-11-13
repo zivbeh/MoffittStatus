@@ -1,7 +1,6 @@
 "use client";
 
 import {LibraryHours} from "@/components/library-hours"
-import { useEffect, useState } from "react";
 import { AcademicCapIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { AiOutlineInstagram } from "react-icons/ai";
