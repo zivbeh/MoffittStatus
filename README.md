@@ -1,3 +1,5 @@
+We make finding a library seat simple and quick, so you can spend more time studying and less time searching. To create a campus where every student can make the most of their time.
+
 We realized that our university library was overflowing during midterms and it took 20-30 minutes to walk around looking for an open seat. So, we built an Instagram account (@moffittstatus) posting hourly updates of how busy each floor is, so students can skip the busy floors and go straight to open seats. Responses were phenomenal, with 95% of students saying we helped them save time. After proving the concept (see screenshots below), we began building moffitstatus.io. 
 
 The project below is v1, with many improvements to come. To run it, make sure you have next.js and react packages installed.
