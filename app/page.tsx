@@ -186,8 +186,8 @@ export default function HomePage() {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Link href="/foodline" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>Food Line</NavigationMenuLink>
+                <Link href="/info" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>Library Hours</NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
             </NavigationMenuList> 
