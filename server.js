@@ -10,7 +10,7 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
-            cron.schedule('0 5 * * *', async() => {
+            cron.schedule('0 15 * * *', async() => {
                         console.log('Cron job started');
                         const libraries = [
                             { name: "Moffitt Library", floors: ["Floor 1", "Floor 3", "Floor 4", "Floor 5"] },
