@@ -1,40 +1,7 @@
 // pages/api/saveData.ts
-// import type { NextApiRequest, NextApiResponse } from 'next'
-// import fs from 'fs';
-// import path from 'path';
 import db from '../../../lib/db';
 // Handle POST request
 import { NextResponse } from 'next/server';
-
-// import cron from 'node-cron';
-// import fetch from 'node-fetch';
-
-// cron.schedule('1 * * * *', async() => {
-//     try {
-//         data = {
-//             libraryName: "Haas Library",
-//             floor: null,
-//             updatedBy: "Anonymous",
-//             busyScale: 2,
-//             createdAt: new Date()
-//         }
-//         const response = await fetch('https://moffittstatus.live/api/saveData', {
-//             method: 'POST',
-//             headers: { 'Content-Type': 'application/json' },
-//             body: JSON.stringify({ data }) // Send data in the expected format
-//         });
-
-//         if (response.ok) {
-//             console.log('Data sent successfully at 2:00 am:', data);
-//         } else {
-//             console.error('Failed to send data:', response.statusText);
-//         }
-//     } catch (error) {
-//         console.error('Error sending POST request:', error);
-//     }
-// });
-
-
 
 export async function POST(req) {
 
