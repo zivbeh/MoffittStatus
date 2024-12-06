@@ -203,6 +203,13 @@ export default function HomePage() {
         </a>
       </div>
 
+      {/* Add mission statement after header */}
+      <div className="text-center mb-8">
+        <p className="text-lg text-gray-700 max-w-3xl mx-auto">
+          We make finding a library seat simple and quick, so you can spend more time studying and less time searching. To create a campus where every student can make the most of their time.
+        </p>
+      </div>
+
       {/* Thin Divider */}
       <div className="w-full h-[1px] bg-gray-300 mb-5"></div>
 
