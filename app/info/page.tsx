@@ -12,6 +12,16 @@ import {
 } from "@/components/ui/navigation-menu"
 
 import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Library Hours | UC Berkeley Libraries',
+  description: 'Current operating hours for UC Berkeley Libraries. Check when Moffitt Library and other campus libraries are open.',
+  openGraph: {
+    title: 'MoffittStatus - Library Hours',
+    description: 'Current operating hours for UC Berkeley Libraries',
+  },
+};
 
 export default function InfoPage() {
   

@@ -16,26 +16,16 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'MoffittStatus - Find Library Seats at UC Berkeley',
-  description: 'Find available seats at UC Berkeley\'s Moffitt Library instantly. Real-time updates help students spend more time studying and less time searching.',
+  metadataBase: new URL('https://moffittstatus.live'),
+  title: {
+    template: '%s | MoffittStatus',
+    default: 'MoffittStatus',
+  },
+  description: 'Find available seats at UC Berkeley\'s libraries instantly. Real-time updates help students spend more time studying and less time searching.',
   keywords: 'Moffitt Library, UC Berkeley library seats, library availability, Berkeley study spaces',
   openGraph: {
-    title: 'MoffittStatus - Find Library Seats at UC Berkeley',
-    description: 'Real-time seat availability for UC Berkeley\'s Moffitt Library',
-    url: 'https://moffittstatus.live',
-    siteName: 'MoffittStatus',
     type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'MoffittStatus - Find Library Seats at UC Berkeley',
-    description: 'Real-time seat availability for UC Berkeley\'s Moffitt Library',
-  },
-  verification: {
-    google: 'google-site-verification=1JihZ_4NBiE7mkLIRcrXesveFlSRAYMjzx14hnnU0qw', // Add your Google verification code
-  },
-  alternates: {
-    canonical: 'https://moffittstatus.live',
+    siteName: 'MoffittStatus',
   },
 };
 

@@ -22,6 +22,16 @@ import {
 
 import { AcademicCapIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Find Library Seats at UC Berkeley',
+  description: 'Real-time seat availability tracker for UC Berkeley Libraries. Find study spaces instantly at Moffitt, Doe, and other campus libraries.',
+  openGraph: {
+    title: 'MoffittStatus - Find Library Seats at UC Berkeley',
+    description: 'Real-time seat availability for UC Berkeley\'s Moffitt Library',
+  },
+};
 
 type FloorData = {
   libraryName: string;
