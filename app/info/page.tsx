@@ -33,6 +33,11 @@ export default function InfoPage() {
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>Library Capacity</NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/mlk" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>MLK Student Center</NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
             </NavigationMenuList> 
           </NavigationMenu>
         </div>
