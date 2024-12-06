@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer');
+import puppeteer from 'puppeteer';
 
 const URL = 'https://live.waitz.io/fphvsk3elnhs';
 
@@ -12,9 +12,9 @@ async function scrapeOccupancy() {
         const venues = await page.evaluate(() => {
             const cards = document.querySelectorAll('.MuiCard-root');
             return Array.from(cards).map(card => {
-                const name = card.querySelector('.MuiTypography-h2')?.textContent.trim();
-                const status = card.querySelector('.MuiTypography-body1')?.textContent.trim();
-                const busyness = card.querySelector('.css-1tglk97')?.textContent.trim();
+                const name = card.querySelector('.MuiTypography-h2') ? .textContent.trim();
+                const status = card.querySelector('.MuiTypography-body1') ? .textContent.trim();
+                const busyness = card.querySelector('.css-1tglk97') ? .textContent.trim();
                 return { name, status, busyness };
             });
         });
@@ -34,4 +34,4 @@ async function scrapeOccupancy() {
     }
 }
 
-module.exports = scrapeOccupancy;
+export default scrapeOccupancy;
