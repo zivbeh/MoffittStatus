@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import dynamic from 'next/dynamic'
+import InfoPageClient from './info-client';
 
 export const metadata: Metadata = {
   title: 'Library Hours | UC Berkeley Libraries',
@@ -9,8 +9,6 @@ export const metadata: Metadata = {
     description: 'Current operating hours for UC Berkeley Libraries',
   },
 };
-
-const InfoPageClient = dynamic(() => import('@/app/info/info-client'), { ssr: false })
 
 export default function Page() {
   return <InfoPageClient />
