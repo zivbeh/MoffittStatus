@@ -24,11 +24,16 @@ export default function InfoPageClient() {
           </h1>
         </div>
         <div>
-          <NavigationMenu>
+        <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
                 <Link href="/" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>Library Capacity</NavigationMenuLink>
+                </Link>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Link href="/mlk" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>MLK Student Center</NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
             </NavigationMenuList> 

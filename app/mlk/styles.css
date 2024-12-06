@@ -1,0 +1,158 @@
+/* Base styles */
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+}
+
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+
+/* Spacing between form elements */
+
+.space-y-8>*+* {
+    margin-top: 2rem;
+}
+
+
+/* Form Item */
+
+.form-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-item label {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+
+/* Buttons */
+
+button {
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+button.bg-black {
+    background-color: #000;
+    color: white;
+}
+
+button.bg-gray-500 {
+    background-color: #6b7280;
+    color: white;
+}
+
+button.w-full {
+    width: 100%;
+}
+
+button:hover.bg-black {
+    background-color: #333;
+}
+
+
+/* Slider */
+
+.slider {
+    width: 100%;
+    margin: 0.5rem 0;
+}
+
+.slider .slider-track {
+    background-color: #ddd;
+    height: 4px;
+    border-radius: 2px;
+    position: relative;
+}
+
+.slider .slider-thumb {
+    height: 12px;
+    width: 12px;
+    background-color: #000;
+    border-radius: 50%;
+    position: absolute;
+    top: -4px;
+}
+
+
+/* Form Control and Input Elements */
+
+.form-control {
+    margin-top: 0.5rem;
+}
+
+.form-control input,
+.form-control select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+}
+
+.form-control input:focus,
+.form-control select:focus {
+    border-color: #333;
+    outline: none;
+}
+
+.form-description {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.form-message {
+    color: #ff4d4f;
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+
+/* Status text */
+
+.status {
+    font-size: 0.9rem;
+    color: #4b5563;
+}
+
+
+/* Responsive adjustments */
+
+@media (max-width: 768px) {
+    form {
+        padding: 1rem;
+    }
+    button {
+        padding: 0.75rem;
+    }
+}
