@@ -124,7 +124,7 @@ const OccupancyDisplay = () => {
             {/* Existing Card Component */}
             <Card className="shadow-md transition-transform duration-300 hover:scale-105 sm:hover:scale-103">
                 <CardHeader className="text-left p-4">
-                    <CardTitle className="text-xl font-semibold">MLK Library Status</CardTitle>
+                    <CardTitle className="text-xl font-semibold">MLK Library Status - Coming Soon...</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col gap-2 mt-2 mb-4">
                     {isLoading ? (

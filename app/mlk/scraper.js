@@ -1,37 +1,55 @@
-import puppeteer from 'puppeteer';
+const axios = require('axios');
+const cheerio = require('cheerio');
 
 const URL = 'https://live.waitz.io/fphvsk3elnhs';
 
-async function scrapeOccupancy() {
-    try {
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
-        await page.goto(URL, { waitUntil: 'networkidle0' });
-        await new Promise(resolve => setTimeout(resolve, 2000));
+function scrapeOccupancy() {
+    return new Promise(async(resolve, reject) => {
+        try {
+            console.log('Fetching HTML...');
+            const { data: html } = await axios.get(URL);
 
-        const venues = await page.evaluate(() => {
-            const cards = document.querySelectorAll('.MuiCard-root');
-            return Array.from(cards).map(card => {
-                const name = card.querySelector('.MuiTypography-h2')?.textContent.trim();
-                const status = card.querySelector('.MuiTypography-body1')?.textContent.trim();
-                const busyness = card.querySelector('.css-1tglk97')?.textContent.trim();
-                return { name, status, busyness };
+            console.log('Parsing HTML...');
+            const $ = cheerio.load(html);
+
+            const venues = [];
+            $('.MuiCard-root').each((_, element) => {
+                const name = $(element).find('.MuiTypography-h2').text().trim();
+                const status = $(element).find('.MuiTypography-body1').text().trim();
+                const busyness = $(element).find('.css-1tglk97').text().trim();
+
+                if (name && busyness) {
+                    venues.push({ name, status, busyness });
+                }
             });
-        });
 
-        // Print results
-        venues.forEach(venue => {
-            if (venue.name && venue.busyness) {
-                console.log(`${venue.name}: ${venue.busyness}`);
-            }
-        });
-
-        await browser.close();
-        return venues;
-    } catch (error) {
-        console.error('Error:', error.message);
-        return [];
-    }
+            console.log('Scraping complete.');
+            resolve(venues);
+        } catch (error) {
+            console.error('Error scraping occupancy:', error.message);
+            reject(error);
+        }
+    });
 }
 
-export default scrapeOccupancy;
+// Test function using promises
+function testScraper() {
+    console.log('Starting scrapeOccupancy test...');
+    scrapeOccupancy()
+        .then((results) => {
+            console.log('Scraped Venues:', results);
+        })
+        .catch((error) => {
+            console.error('Test failed with error:', error.message);
+        })
+        .finally(() => {
+            console.log('Test completed.');
+        });
+}
+
+// Execute test function if the file is run directly
+if (require.main === module) {
+    testScraper();
+}
+
+module.exports = scrapeOccupancy;
