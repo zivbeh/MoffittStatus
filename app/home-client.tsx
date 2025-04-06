@@ -211,8 +211,9 @@ export default function HomePageClient() {
           <CardContent className="flex flex-col gap-2 mt-2 mb-4">
             {/* Moffitt Library Section */}
             <div className="flex-1">
-              <h2 className="text-lg text-center font-semibold mb-3">Moffitt Library</h2>
-              {["Floor 1", "Floor 3", "Floor 4", "Floor 5"].map((floor) => (
+              <h2 className="text-lg text-center font-semibold mb-3">Moffitt Library is closed till 2026. However, more updates for MoffitStatus are coming!
+              </h2>
+              {/* {["Floor 1", "Floor 3", "Floor 4", "Floor 5"].map((floor) => (
                 <div key={floor} className="flex items-center space-x-2 mb-2">
                   <span className="w-20 text-center font-medium">
                     {floor}
@@ -224,7 +225,7 @@ export default function HomePageClient() {
                     />
                   </div>
                 </div>
-              ))}
+              ))} */}
             </div>
 
             {/* Thin Horizontal Divider */}
@@ -294,7 +295,7 @@ export default function HomePageClient() {
                   </>
                 ) : (
                   <>
-                    All floors in Moffitt are busy. Consider studying at{" "}
+                    Moffitt is closed. Consider studying at{" "}
                     <strong>
                       {getProgressValue("Doe Library") < 80
                         ? "Doe Library"
@@ -311,7 +312,7 @@ export default function HomePageClient() {
                 <strong>For Groups:</strong>{" "}
                 {allFloorsAbove79 || leastBusyFloors.length === 0 ? (
                   <>
-                    All floors in Moffitt are busy. Go to{" "}
+                    Moffitt is closed. Go to{" "}
                     <strong>
                       {getProgressValue("Doe Library") < 80
                         ? "Doe Library"

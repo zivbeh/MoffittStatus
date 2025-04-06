@@ -31,25 +31,25 @@ export function LibraryHours() {
     {
       name: "Moffitt Library",
       hours: {
-        Mon: "24 hours",
-        Tue: "24 hours",
-        Wed: "24 hours",
-        Thu: "24 hours",
-        Fri: "24 hours",
-        Sat: "24 hours",
-        Sun: "24 hours",
+        Mon: "Under Renovations",
+        Tue: "Under Renovations",
+        Wed: "Under Renovations",
+        Thu: "Under Renovations",
+        Fri: "Under Renovations",
+        Sat: "Under Renovations",
+        Sun: "Under Renovations",
       },
     },
     {
       name: "Doe Library",
       hours: {
-        Mon: "8:00 AM - 9:00 PM",
-        Tue: "8:00 AM - 9:00 PM",
-        Wed: "8:00 AM - 9:00 PM",
-        Thu: "8:00 AM - 9:00 PM",
-        Fri: "8:00 AM - 9:00 PM",
-        Sat: "Closed",
-        Sun: "1:00 PM - 9:00 PM",
+        Mon: "8:00 AM - 6:00 AM",
+        Tue: "8:00 AM - 6:00 AM",
+        Wed: "8:00 AM - 6:00 AM",
+        Thu: "8:00 AM - 6:00 AM",
+        Fri: "8:00 AM - 10:00 PM",
+        Sat: "9:00 AM - 10:00 PM",
+        Sun: "1:00 PM - 6:00 AM",
       },
     },
     {
@@ -97,7 +97,9 @@ export function LibraryHours() {
         const dayOfWeek = now.toLocaleString("en-US", { weekday: "short" }); // e.g., "Mon"
 
         const todayHours = library.hours[dayOfWeek];
-
+        if (todayHours === "Under Renovations") {
+          return { ...library, status: "Closed" };
+        }
         if (!todayHours || todayHours === "Closed") {
           return { ...library, status: "Closed" };
         }
