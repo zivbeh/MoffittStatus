@@ -2,6 +2,7 @@
 
 import {LibraryHours} from "@/components/library-hours"
 import NavBar from "@/components/basic/NavBar";
+import NavBar from "@/components/basic/NavBar";
 
 export default function InfoPageClient() {
   return (

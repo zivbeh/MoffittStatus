@@ -18,17 +18,16 @@ export default function NavBar({LibraryCapacity, LibraryHours, MLK}:NavBarProps)
     return(
         <>
         {/* Header Section */}
-        <div className="flex items-center justify-between mb-5 flex-wrap">
+        <div className="flex items-center justify-between mb-5">
         <div className="flex items-center">
             <AcademicCapIcon className="h-10 w-10 mr-4 transition-transform duration-300 hover:scale-110 bg-gradient-to-r from-black to-white bg-clip-text" />
-            <h1 className="text-3rem font-bold transition-transform duration-300 hover:scale-105 sm:hover:scale-103">
+            <h1 className="text-3xl font-bold transition-transform duration-300 hover:scale-105 sm:hover:scale-103">
                 MoffittStatus
             </h1>
-            
         </div>
         <div>
             <NavigationMenu>
-                <NavigationMenuList className="flex-wrap">
+                <NavigationMenuList>
                     {LibraryCapacity && 
                     <NavigationMenuItem>
                         <Link href="/" legacyBehavior passHref>
@@ -51,7 +50,9 @@ export default function NavBar({LibraryCapacity, LibraryHours, MLK}:NavBarProps)
                     </NavigationMenuItem>
                     }
                 </NavigationMenuList> 
-                <a
+            </NavigationMenu>
+        </div>
+        <a
             href="https://www.instagram.com/moffittstatus"
             target="_blank"
             rel="noopener noreferrer"
@@ -59,9 +60,6 @@ export default function NavBar({LibraryCapacity, LibraryHours, MLK}:NavBarProps)
         >
             <AiOutlineInstagram />
         </a>
-            </NavigationMenu>
-        </div>
-        
     </div>
     {/* Thin Divider */}
     <div className="w-full h-[1px] bg-gray-300 mb-5"></div>
