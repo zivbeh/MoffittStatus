@@ -8,14 +8,17 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
+
+import Map from "@/components/map";
 import NavBar from '@/components/basic/NavBar';
+import ProgressBarCircle from '@/components/basic/ProgressBarCircle/ProgressBarCircle';
 
 interface Venue {
     name: string;
     busyness: string;
 }
 
-const OccupancyDisplay = () => {
+const MapDisplay = () => {
     const [venues, setVenues] = useState<Venue[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -72,43 +75,46 @@ const OccupancyDisplay = () => {
         const normalizedBusyness = busyness.toLowerCase().trim();
         return busynessMap[normalizedBusyness] || 0;
     };
-
     return (
         <div className="container mx-auto px-4 mt-5">
-            <NavBar LibraryHours={true} LibraryCapacity={true} MLK={true}></NavBar>
+            <NavBar LibraryCapacity={true} LibraryHours={true} MLK={true}></NavBar>
+            <div className='flex flex-col gap-2'>
+            <ProgressBarCircle circleMax={40} duration={2}></ProgressBarCircle>
 
-            {/* Existing Card Component */}
-            <Card className="shadow-md transition-transform duration-300 hover:scale-105 sm:hover:scale-103">
-                <CardHeader className="text-left p-4">
-                    <CardTitle className="text-xl font-semibold">MLK Library Status - Coming Soon...</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-2 mt-2 mb-4">
-                    {isLoading ? (
-                        <div className="flex justify-center items-center py-8">
-                            <span className="text-gray-600 text-lg">Loading data...</span>
-                        </div>
-                    ) : (
-                        venues.map((venue, index) => (
-                            <div key={index} className="flex items-center space-x-2 mb-2">
-                                <span className="w-20 text-center font-medium">
-                                    {venue.name}
-                                </span>
-                                <div className="flex-1">
-                                    <Progress 
-                                        value={getBusynessPercentage(venue.busyness)} 
-                                        className="w-full" 
-                                    />
-                                </div>
-                                <span className="w-16 text-right text-sm">
-                                    {getBusynessPercentage(venue.busyness)}%
-                                </span>
+                <Map/>
+                {/* Existing Card Component */}
+                <Card className="shadow-md transition-transform duration-300 hover:scale-105 sm:hover:scale-103">
+                    <CardHeader className="text-left p-4">
+                        <CardTitle className="text-xl font-semibold">Library Info</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex flex-col gap-2 mt-2 mb-4">
+                        {isLoading ? (
+                            <div className="flex justify-center items-center py-8">
+                                <span className="text-gray-600 text-lg">Loading data...</span>
                             </div>
-                        ))
-                    )}
-                </CardContent>
-            </Card>
+                        ) : (
+                            venues.map((venue, index) => (
+                                <div key={index} className="flex items-center space-x-2 mb-2">
+                                    <span className="w-20 text-center font-medium">
+                                        {venue.name}
+                                    </span>
+                                    <div className="flex-1">
+                                        <Progress 
+                                            value={getBusynessPercentage(venue.busyness)} 
+                                            className="w-full" 
+                                        />
+                                    </div>
+                                    <span className="w-16 text-right text-sm">
+                                        {getBusynessPercentage(venue.busyness)}%
+                                    </span>
+                                </div>
+                            ))
+                        )}
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     );
 };
 
-export default OccupancyDisplay;
+export default MapDisplay;

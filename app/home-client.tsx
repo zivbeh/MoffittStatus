@@ -1,13 +1,9 @@
 "use client";
 
-import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from "@/components/ui/navigation-menu";
-import { navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
-import { AiOutlineInstagram } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { AcademicCapIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
+import NavBar from "@/components/basic/NavBar";
 
 type FloorData = {
   libraryName: string;
@@ -16,7 +12,21 @@ type FloorData = {
   busyScale: number;
   createdAt: string;
 };
-
+const ProgressBarItem = ({libraryName, progressVal}:{libraryName:string, progressVal:number}) =>{
+  return (
+    <div className="mb-2">
+                <div className="flex items-center space-x-2">
+                  <span className="w-20 text-center font-medium">{libraryName}</span>
+                  <div className="flex-1">
+                    <Progress
+                      value={progressVal}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+  )
+}
 export default function HomePageClient() {
   const [data, setData] = useState<FloorData[]>([]);
   const [lastUpdated, setLastUpdated] = useState<string>("");
@@ -162,42 +172,8 @@ export default function HomePageClient() {
 
   return (
     <div className="container mx-auto px-4 mt-5">
-      {/* Header Section */}
-      <div className="flex items-center justify-between mb-5">
-        <div className="flex items-center">
-          <AcademicCapIcon className="h-10 w-10 mr-4 transition-transform duration-300 hover:scale-110 bg-gradient-to-r from-black to-white bg-clip-text" />
-          <h1 className="text-3xl font-bold transition-transform duration-300 hover:scale-105 sm:hover:scale-103">
-            MoffittStatus
-          </h1>
-        </div>
-        <div>
-        <NavigationMenu>
-            <NavigationMenuList>
-                <NavigationMenuItem>
-                    <Link href="/mlk" legacyBehavior passHref>
-                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>MLK Student Union</NavigationMenuLink>
-                    </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                    <Link href="/info" legacyBehavior passHref>
-                        <NavigationMenuLink className={navigationMenuTriggerStyle()}>Library Hours</NavigationMenuLink>
-                    </Link>
-                </NavigationMenuItem>
-            </NavigationMenuList> 
-        </NavigationMenu>
-        </div>
-        <a
-          href="https://www.instagram.com/moffittstatus"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-4xl text-purple-500 hover:text-pink-500 hover:scale-110 transition-transform duration-300 transition-colors"
-        >
-          <AiOutlineInstagram />
-        </a>
-      </div>
-
-      {/* Thin Divider */}
-      <div className="w-full h-[1px] bg-gray-300 mb-5"></div>
+      
+      <NavBar LibraryCapacity={true} LibraryHours={true} MLK={true}></NavBar>
 
       {/* Floor Breakdown */}
       <div className="w-full flex flex-col gap-6">
@@ -234,44 +210,9 @@ export default function HomePageClient() {
             {/* Other Libraries Section */}
             <div className="flex-1 space-y-2">
               <h2 className="text-lg text-center font-semibold mb-3">Other Libraries</h2>
-              {/* Main Stacks */}
-              <div className="mb-2">
-                <div className="flex items-center space-x-2">
-                  <span className="w-20 text-center font-medium">Stacks</span>
-                  <div className="flex-1">
-                    <Progress
-                      value={getProgressValue("Main Stacks")}
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Doe Library */}
-              <div className="mb-2">
-                <div className="flex items-center space-x-2">
-                  <span className="w-20 text-center font-medium">Doe</span>
-                  <div className="flex-1">
-                    <Progress
-                      value={getProgressValue("Doe Library")}
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Haas Library */}
-              <div>
-                <div className="flex items-center space-x-2">
-                  <span className="w-20 text-center font-medium">Haas</span>
-                  <div className="flex-1">
-                    <Progress
-                      value={getProgressValue("Haas Library")}
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-              </div>
+              <ProgressBarItem libraryName="Stacks" progressVal={getProgressValue("Main Stacks")}></ProgressBarItem>
+              <ProgressBarItem libraryName="Doe" progressVal={getProgressValue("Doe Library")}></ProgressBarItem>
+              <ProgressBarItem libraryName="Haas" progressVal={getProgressValue("Haas Library")}></ProgressBarItem>
             </div>
           </CardContent>
         </Card>
