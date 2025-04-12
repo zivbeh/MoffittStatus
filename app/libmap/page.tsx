@@ -79,8 +79,38 @@ const MapDisplay = () => {
         <div className="container mx-auto px-4 mt-5">
             <NavBar LibraryCapacity={true} LibraryHours={true} MLK={true}></NavBar>
             <div className='flex flex-col gap-2'>
-            <ProgressBarCircle circleMax={40} duration={2}></ProgressBarCircle>
+            <div className="w-full flex flex-col gap-6">
+                <Card className="shadow-md transition-transform duration-300 hover:scale-105 sm:hover:scale-103">
+                <CardContent className="flex flex-col gap-2 mt-2 mb-4">
+                    {/* Moffitt Library Section */}
+                    <h2 className="text-lg text-center font-semibold">Summary
+                    </h2>
 
+                    {/* Thin Horizontal Divider */}
+                    <div className="w-full h-px bg-gray-300 my-2"></div>
+
+                    {/* Other Libraries Section */}
+                    <div className="flex-1 flex-wrap flex space-x-10 justify-center">
+                        <div>
+                            <h2 className="text-lg text-center font-semibold mb-3">Moffit</h2>
+                            <ProgressBarCircle circleMax={40} duration={2}></ProgressBarCircle>
+                        </div>
+                        <div>
+                            <h2 className="text-lg text-center font-semibold mb-3">Doe</h2>
+                            <ProgressBarCircle circleMax={90} duration={2}></ProgressBarCircle>
+                        </div>
+                        <div>
+                            <h2 className="text-lg text-center font-semibold mb-3">Stacks</h2>
+                            <ProgressBarCircle circleMax={30} duration={2}></ProgressBarCircle>
+                        </div>
+                        <div>
+                            <h2 className="text-lg text-center font-semibold mb-3">Haas</h2>
+                            <ProgressBarCircle circleMax={25} duration={2}></ProgressBarCircle>
+                        </div>
+                    </div>
+                </CardContent>
+                </Card>
+            </div>
                 <Map/>
                 {/* Existing Card Component */}
                 <Card className="shadow-md transition-transform duration-300 hover:scale-105 sm:hover:scale-103">
