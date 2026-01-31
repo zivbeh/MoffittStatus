@@ -3,8 +3,13 @@ import { JSX, useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Experience } from '../components/Experience'
-import { ChevronRight, Clock, DoorOpen, Users } from 'lucide-react'
+import dynamic from "next/dynamic";
+
+const Experience = dynamic(
+  () => import("../components/Experience").then((mod) => mod.Experience),
+    { ssr: false }
+    );
+    import { ChevronRight, Clock, DoorOpen, Users } from 'lucide-react'
 import React from 'react'
 import { handleQuickBook } from '@/lib/libCal'
 // 1. Add this helper function outside or above your main function
