@@ -389,7 +389,10 @@ export default function LibraryStatusPage() {
         <h2 className="text-2xl font-semibold tracking-tight mb-4">
           Recommendations
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div className="bg-blue-500 text-white p-8 rounded-lg text-2xl">
+  TEST STYLES WORKING
+  </div>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="bg-muted/30">
             <CardHeader>
               <CardTitle className="text-lg">Individuals</CardTitle>

@@ -10,7 +10,8 @@ import {
   Lock, 
   CheckCircle2 
 } from 'lucide-react';
-import { Experience } from '../components/Experience';
+import dynamic from 'next/dynamic';
+const Experience = dynamic(() => import('../components/Experience').then(mod => mod.Experience), { ssr: false });
 
 // --- Types ---
 interface Achievement {

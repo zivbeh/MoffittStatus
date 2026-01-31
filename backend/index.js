@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const apiRoutes = require('./routes'); // Imports from routes/index.js

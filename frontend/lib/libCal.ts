@@ -1,4 +1,5 @@
-'use server'
+ 'use server'
+import fetch from 'node-fetch';
 import { JSDOM } from 'jsdom';
 import * as cheerio from 'cheerio';
 import { BACKEND_URL } from './apiEndPoints';
@@ -237,7 +238,7 @@ export async function getAllLibraryHours(): Promise<LibraryInfo[] | null> {
     const response = await fetch(`${baseUrl}/hours`);
     const html = await response.text();
     
-    const $ = cheerio.load(html);
+    const htmlText = await response.text();
     const libraries: LibraryInfo[] = [];
     
     $('.library-hours-listing').each((_, element) => {
