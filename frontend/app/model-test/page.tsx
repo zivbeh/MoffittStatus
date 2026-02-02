@@ -19,7 +19,7 @@ export default function Page() {
     { 
       id: 'kresge_top', 
       label: 'Mystery Sphere', 
-      icon: <Globe className="w-6 h-6 mb-2" /> ``
+      icon: <Globe className="w-6 h-6 mb-2" />
     },
     { 
       id: 'kresge_bottom', 
