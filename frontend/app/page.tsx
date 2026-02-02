@@ -22,7 +22,7 @@ import {
   Armchair,
   Pin, 
 } from "lucide-react";
-
+import {SubmitReport} from './components/submitRating'
 import { cn, getDynamicStyles } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -389,9 +389,7 @@ export default function LibraryStatusPage() {
         <h2 className="text-2xl font-semibold tracking-tight mb-4">
           Recommendations
         </h2>
-<div className="bg-blue-500 text-white p-8 rounded-lg text-2xl">
-  TEST STYLES WORKING
-  </div>
+
 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="bg-muted/30">
             <CardHeader>
@@ -415,17 +413,19 @@ export default function LibraryStatusPage() {
       <section>        
         <div className="space-y-6">
           <div>
-            <div className="flex flex-col md:flex-row gap-4 mb-4">
+            <div className="flex flex-col gap-4 mb-4">
             <div className="relative flex-grow">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Search libraries..."
-                className="pl-10"
-                value={searchQuery} // Bind value
-                onChange={(e) => setSearchQuery(e.target.value)} // Update state
+                className="pl-10 w-[256px] border-2 border-gray-400"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
+            <SubmitReport></SubmitReport>
+
 
               {/* <DatePicker date={date} setDate={setDate} /> */}
 
@@ -479,13 +479,13 @@ export default function LibraryStatusPage() {
               const roomPercent = (lib.roomsOpen / lib.roomsTotal) * 100;
               const isPinned = pinnedIds.includes(lib.id)
               return (
-                <Card key={lib.id} className="overflow-hidden rounded-[2rem] border-2 border-indigo-50/50 bg-white shadow-[0_8px_30px_rgb(224,231,255,0.6)] transition-all duration-300 ease-spring hover:-translate-y-1 hover:shadow-[0_20px_40px_rgb(224,231,255,0.8)]">
+                <Card key={lib.id} className="overflow-hidden rounded-[2rem] border-none bg-white shadow-[0_20px_40px_rgb(224,231,255,0.8)]">
                   <CardHeader className="p-0">
                   <div className="relative h-48 w-full overflow-hidden rounded-[1.5rem] shadow-sm">
       <img
         src={lib.image}
         alt={`${lib.name} exterior`}
-        className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+        className="h-full w-full object-cover"
       />
       {/* <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div> */}
       <Button
@@ -504,7 +504,6 @@ export default function LibraryStatusPage() {
               }
             `}
           >
-            {/* You need to import Pin from lucide-react */}
             <Pin className={`h-4 w-4 transition-transform ${isPinned ? "fill-current" : "rotate-45"}`} />
           </Button>
     </div>
@@ -519,7 +518,6 @@ export default function LibraryStatusPage() {
             e.stopPropagation();
             window.open(lib.url, '_blank');
           }}
-          // Added bounce effects (hover:scale, active:scale) and stronger shadow
           className="h-9 pl-3 pr-4 bg-blue-50 text-blue-600 border-2 border-blue-100 rounded-full shadow-sm transition-all duration-300 ease-spring hover:scale-105 active:scale-95 hover:bg-blue-100 hover:border-blue-200 hover:shadow-md group"
         >
           {/* Icon wiggles on hover */}
@@ -527,10 +525,9 @@ export default function LibraryStatusPage() {
           <span className="text-xs font-bold">Map</span>
         </Button>
                       </div>
-                      <div className="flex flex-wrap gap-y-2 justify-between items-center text-sm bg-slate-50/80 p-3 rounded-2xl">
+                      <div className="flex flex-wrap gap-y-2 justify-between items-center text-sm bg-transparent p-3 rounded-2xl">
                       {lib.isOpen ? (
                         <div className="flex items-center font-bold text-emerald-600 bg-emerald-100/50 py-1 px-3 rounded-full">
-                          {/* Swapped dot for emoji */}
                           <StatusDot 
                             variant="success" 
                             className="mr-2" 
