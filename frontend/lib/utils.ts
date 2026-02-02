@@ -38,22 +38,27 @@ export const getCurrentLocation = (): Promise<{ lat: number; lng: number }> => {
   });
 };
 
-export const getDynamicStyles = (percentage: number) => {
+export const getDynamicStyles = (percentage:number) => {
   let textClass = '';
-  let sliderClass = '';
+  let sliderClass = ''; // Keeping this as HSL or Hex if needed for style={{}} prop
 
   if (percentage <= 25) {
+    // Green-600
     textClass = 'text-green-600';
-    sliderClass = '[&_.bg-primary]:bg-green-600'; 
+    sliderClass = 'hsl(142, 76%, 36%)';
   } else if (percentage <= 50) {
+    // Yellow-600
     textClass = 'text-yellow-600';
-    sliderClass = '[&_.bg-primary]:bg-yellow-600';
+    sliderClass = 'hsl(42, 93%, 40%)';
   } else if (percentage <= 75) {
+    // Orange-600
     textClass = 'text-orange-600';
-    sliderClass = '[&_.bg-primary]:bg-orange-600';
+    sliderClass = 'hsl(25, 90%, 48%)';
   } else {
+    // Red-600
     textClass = 'text-red-600';
-    sliderClass = '[&_.bg-primary]:bg-red-600';
+    sliderClass = 'hsl(0, 72%, 51%)';
   }
+
   return { textClass, sliderClass };
 };

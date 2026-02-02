@@ -447,7 +447,7 @@ export default function LibraryStatusPage() {
                     cursor-pointer select-none transition-all duration-200 gap-1 pr-3
                     ${isSelected 
                       ? `${feature.activeColor} border-transparent font-medium shadow-sm` // Active Style
-                      : "text-muted-foreground hover:bg-muted/50 border-dashed"           // Inactive Style
+                      : "text-muted-foreground hover:bg-gray-200/50 border-dashed"           // Inactive Style
                     }
                   `}
                 >
@@ -569,20 +569,21 @@ export default function LibraryStatusPage() {
                     </div> */}
                     {lib.isOpen &&
                     <div>
-                      <label className="text-sm font-medium">
+                      <label className="text-md font-bold">
                         {CrowdLevelText(lib)}
                       </label>
                       <Slider
-                        defaultValue={[lib.crowdLevel]}
+                        defaultValue={[lib.crowdLevel || 30]}
                         value={[lib.crowdLevel]}
                         max={100}
                         step={1}
                         disabled
-                        className={cn("my-2",getDynamicStyles(lib.crowdLevel).sliderClass)}
+                        className="my-2 pointer-events-none" 
+                        rangeClassName={getDynamicStyles(lib.crowdLevel).sliderClass}
                       />
                       <div className="flex justify-between text-xs text-muted-foreground">
-                        <span>Empty</span>
-                        <span>Packed</span>
+                        <span className='text-gray-400'>Empty</span>
+                        <span className='text-gray-400'>Packed</span>
                       </div>
                     </div>
                     }
@@ -591,7 +592,6 @@ export default function LibraryStatusPage() {
                         // Check if the feature is true in your data object
                         const isActive = lib.features[feature.key];
                         const IconComponent = feature.icon;
-
                         return (
                           <div key={feature.key}>
                           <Tooltip>
@@ -602,7 +602,7 @@ export default function LibraryStatusPage() {
                               relative flex items-center justify-center w-9 h-9 rounded-full border transition-all duration-200 ease-in-out
                               ${isActive 
                                 ? `${feature.activeColor} shadow-sm scale-100 opacity-100` 
-                                : "bg-transparent border-transparent text-muted-foreground/20 scale-90 grayscale"
+                                : "bg-transparent border-transparent text-gray-800/20 scale-90 grayscale"
                               }
                             `}
                           >
@@ -624,11 +624,11 @@ export default function LibraryStatusPage() {
                   
                   <CardFooter>
                     {(lib.rooms.length>0||(lib.name=='Engineering & Mathematical Sciences Library')) && 
-                  <Popover>
+                  <Popover modal={true}>
                     <PopoverTrigger asChild>
-                      <Button className="w-full bg-blue-400 hover:bg-blue-600">View Details</Button>
+                      <Button className="w-full text-sm md:text-md lg:w-24 lg:flex lg:flex-col lg:items-center bg-blue-400 hover:bg-blue-500 text-white font-bold">View Details</Button>
                     </PopoverTrigger>
-                    <PopoverContent className="sm:w-[60vh] lg:w-[100vh] xl:w-[125vh] max-w-4xl bg-transparent border-transparent shadow-none">
+                    <PopoverContent className="sm:w-[60vh] lg:w-[100vh] xl:w-[125vh] max-w-4xl bg-white ">
                       <Details currentLibrary={lib.nameID} floors={lib.rooms} key={lib.nameID} libraryName={lib.name}></Details>
                     </PopoverContent>
                   </Popover>

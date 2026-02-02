@@ -85,8 +85,8 @@ export default function BusyReportDialog({ open, setOpen, onOpenChange }: { open
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md md:max-w-lg p-6 rounded-lg shadow-xl">
-        <DialogHeader className="relative pb-4 border-b border-gray-200">
+      <DialogContent className="sm:max-w-md md:max-w-lg p-6 rounded-lg shadow-xl bg-white">
+        <DialogHeader className="relative pb-4 border-transparent">
           <DialogTitle className="text-2xl font-bold text-blue-400">
             How busy is it?
           </DialogTitle>
@@ -95,8 +95,8 @@ export default function BusyReportDialog({ open, setOpen, onOpenChange }: { open
             Your contribution makes a difference!
           </DialogDescription>
         </DialogHeader>
-        <PersonDetector setPercent={setBusyPercentage}></PersonDetector>
-        <span className='flex justify-center font-bold text-4xl text-blue-400'>OR</span>
+        {/* <PersonDetector setPercent={setBusyPercentage}></PersonDetector> */}
+        {/* <span className='flex justify-center font-bold text-4xl text-blue-400'>OR</span> */}
         <div className="grid gap-0 py-0">
           <div className="pl-5 md:pl-15 grid items-center justify-center md:gap-4 grid-cols-2">
             <div>
@@ -150,7 +150,8 @@ export default function BusyReportDialog({ open, setOpen, onOpenChange }: { open
               step={5}
               onValueChange={setBusyPercentage}
               // cn() merges default class with dynamic class
-              className={cn("w-full", sliderClass)} 
+              className="my-2" 
+              rangeClassName={sliderClass} 
             />
             
             <div className="mt-4 flex justify-between text-xs font-medium">
@@ -161,40 +162,50 @@ export default function BusyReportDialog({ open, setOpen, onOpenChange }: { open
             </div>
           </div>
 
-           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 mt-6">
-            <div className="flex items-center justify-between rounded-lg border p-4 shadow-sm bg-gray-50">
-              <div className="flex items-center gap-3">
-                <VolumeX className="h-6 w-6 text-gray-600" />
+           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mt-6">
+            <div className="flex items-center justify-between rounded-lg border px-4 shadow-sm bg-gray-50">
+              <div className="flex items-center gap-2">
+                <VolumeX className="h-5 w-5 text-gray-400" />
                 <Label htmlFor="loud-mode" className="text-base font-medium text-gray-800">
                   Loud?
                 </Label>
               </div>
+              <div className='flex flex-col gap-y-2 justify-center items-center'>
+              <Label htmlFor="loud-mode" className="text-base text-gray-500 ml-2">
+                {isLoud ? 'Loud' : 'Quiet'}
+              </Label>
               <Switch
                 id="loud-mode"
                 checked={isLoud}
                 onCheckedChange={setIsLoud}
                 aria-label="Toggle loud mode"
+                className='ml-2'
               />
-              <Label htmlFor="loud-mode" className="text-base text-gray-500 ml-2">
-                {isLoud ? 'Loud' : 'Quiet'}
-              </Label>
+              
+
+              </div>
             </div>
             <div className="flex items-center justify-between rounded-lg border p-4 shadow-sm bg-gray-50">
               <div className="flex items-center gap-3">
-                <Users className="h-6 w-6 text-gray-600" />
+                <Users className="h-6 w-6 text-gray-400" />
                 <Label htmlFor="groups-mode" className="text-base font-medium text-gray-800">
                   Good for Groups?
                 </Label>
               </div>
-              <Switch
+             <div className='flex flex-col items-center gap-y-2'>
+             <Label htmlFor="groups-mode" className="text-base text-gray-500 ml-2">
+                 {goodForGroups ? 'Yes' : 'No'}
+              </Label>
+             <Switch
                 id="groups-mode"
                 checked={goodForGroups}
                 onCheckedChange={setGoodForGroups}
                 aria-label="Toggle good for groups"
+                className='ml-2'
               />
-              <Label htmlFor="groups-mode" className="text-base text-gray-500 ml-2">
-                 {goodForGroups ? 'Yes' : 'No'}
-              </Label>
+              
+
+             </div>
             </div>
           </div>
         </div>

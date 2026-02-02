@@ -238,9 +238,9 @@ export async function getAllLibraryHours(): Promise<LibraryInfo[] | null> {
     const response = await fetch(`${baseUrl}/hours`);
     const html = await response.text();
     
-    const htmlText = await response.text();
+    //const htmlText = await response.text();
     const libraries: LibraryInfo[] = [];
-    
+    const $ = cheerio.load(html);
     $('.library-hours-listing').each((_, element) => {
       const $el = $(element);
       
