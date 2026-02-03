@@ -51,6 +51,7 @@ import { getAllLibraryHours, getAvailableRooms } from '@/lib/libCal';
 import Details from '@/app/components/libraryDetails';
 import { LibrariesLoading } from './components/librariesLoading';
 import { StatusDot } from './components/statusDot';
+import { StatusBadge } from './components/statusBadge';
 
 type Library = {
   id: number;
@@ -525,22 +526,16 @@ export default function LibraryStatusPage() {
           <span className="text-xs font-bold">Map</span>
         </Button>
                       </div>
-                      <div className="flex flex-wrap gap-y-2 justify-between items-center text-sm bg-transparent p-3 rounded-2xl">
+                      <div className="flex flex-wrap gap-y-2 justify-between items-center text-sm bg-transparent  rounded-2xl">
                       {lib.isOpen ? (
-                        <div className="flex items-center font-bold text-emerald-600 bg-emerald-100/50 py-1 px-3 rounded-full">
-                          <StatusDot 
-                            variant="success" 
-                            className="mr-2" 
-                          />
-                          Open Now
-                        </div>
+                        <StatusBadge crowdLevel={lib.crowdLevel} variant=""></StatusBadge>
                       ) : (
-                        <div className="flex items-center font-bold text-rose-500 bg-rose-100/50 py-1 px-3 rounded-full">
-                          <StatusDot 
-                            variant="error" 
-                            className="mr-2" 
+                        <div className="flex items-center font-bold py-1 rounded-full">
+                          <StatusBadge 
+                            variant="closed" 
+                            className="" 
+                            crowdLevel={0}
                           />
-                          Closed
                         </div>
                       )}
                         {(lib.hours && lib.hours.length > 3 && (!lib.hours.includes('Closed') && lib.hours.length > 0)) && 
@@ -557,33 +552,6 @@ export default function LibraryStatusPage() {
                   </CardHeader>
 
                   <CardContent className="space-y-4">
-                    {/* <div className="flex items-center text-sm">
-                    { lib.roomsOpen !== -1 && <>
-                      <Building className="mr-2 h-4 w-4 text-muted-foreground" />
-                      
-                        Rooms: {lib.roomsOpen}/{lib.roomsTotal} Open ({roomPercent.toFixed(0)}%)
-                      </>}
-                    </div> */}
-                    {lib.isOpen &&
-                    <div>
-                      <label className="text-md font-bold">
-                        {CrowdLevelText(lib)}
-                      </label>
-                      <Slider
-                        defaultValue={[lib.crowdLevel || 30]}
-                        value={[lib.crowdLevel]}
-                        max={100}
-                        step={1}
-                        disabled
-                        className="my-2 pointer-events-none" 
-                        rangeClassName={getDynamicStyles(lib.crowdLevel).sliderClass}
-                      />
-                      <div className="flex justify-between text-xs text-muted-foreground">
-                        <span className='text-gray-400'>Empty</span>
-                        <span className='text-gray-400'>Packed</span>
-                      </div>
-                    </div>
-                    }
                     <div className="flex flex-wrap gap-2 items-center">
                       {featureConfig.map((feature) => {
                         // Check if the feature is true in your data object

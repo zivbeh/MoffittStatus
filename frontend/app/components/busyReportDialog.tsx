@@ -51,7 +51,7 @@ export default function BusyReportDialog({ open, setOpen, onOpenChange }: { open
   
 
   // Get the current styles based on the slider state
-  const { textClass, sliderClass } = getDynamicStyles(busyPercentage[0]);
+  const { textClass, sliderClass, colorClass, nameClass } = getDynamicStyles(busyPercentage[0]);
 
   const handleSubmit = async () => {
     setOpen(false)

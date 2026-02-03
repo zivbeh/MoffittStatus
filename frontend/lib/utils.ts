@@ -41,24 +41,33 @@ export const getCurrentLocation = (): Promise<{ lat: number; lng: number }> => {
 export const getDynamicStyles = (percentage:number) => {
   let textClass = '';
   let sliderClass = ''; // Keeping this as HSL or Hex if needed for style={{}} prop
-
+  let statusType = '';
+  let statusName = ''
   if (percentage <= 25) {
     // Green-600
+    statusName='Not Crowded'
+    statusType='Not Crowded';
     textClass = 'text-green-600';
     sliderClass = 'hsl(142, 76%, 36%)';
   } else if (percentage <= 50) {
     // Yellow-600
+    statusName='Not Too Crowded'
+    statusType='NotTooCrowded';
     textClass = 'text-yellow-600';
     sliderClass = 'hsl(42, 93%, 40%)';
   } else if (percentage <= 75) {
     // Orange-600
+    statusName='Crowded'
+    statusType='Crowded'
     textClass = 'text-orange-600';
     sliderClass = 'hsl(25, 90%, 48%)';
   } else {
     // Red-600
+    statusName='At Capacity'
+    statusType='AtCapacity'
     textClass = 'text-red-600';
     sliderClass = 'hsl(0, 72%, 51%)';
   }
 
-  return { textClass, sliderClass };
+  return { textClass, sliderClass, statusType, statusName };
 };
