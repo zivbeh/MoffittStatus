@@ -20,7 +20,8 @@ import {
   Volume2,
   BookOpenCheck, 
   Armchair,
-  Pin, 
+  Pin,
+  Activity, 
 } from "lucide-react";
 import {SubmitReport} from './components/submitRating'
 import { cn, getDynamicStyles } from "@/lib/utils";
@@ -52,7 +53,7 @@ import Details from '@/app/components/libraryDetails';
 import { LibrariesLoading } from './components/librariesLoading';
 import { StatusDot } from './components/statusDot';
 import { StatusBadge } from './components/statusBadge';
-
+import { BusynessPopup } from './components/BusynessPopup';
 type Library = {
   id: number;
   name: string;
@@ -74,6 +75,7 @@ type Library = {
   url?:string;
   image?:string;
   studyLink?:string;
+  weeklySchedule?:any;
 };
 
 // Configuration for your features
@@ -279,9 +281,13 @@ export default function LibraryStatusPage() {
   
           const ratingsRaw = allRatingsRes?.data?.data || []; // Adjust based on your axios response structure
           const ratingsMap: Record<string, number> = {};
+          const scheduleMap: Record<string, any> = {};
+
           ratingsRaw.forEach((r: any) => {
-            const key = getSlugFromName(r.library); 
+            const key = r.library; 
             ratingsMap[key] = parseFloat(r.average);
+            scheduleMap[key] = r.weeklySchedule;
+            console.log(r.weeklySchedule)
           });
     
           console.log("Ratings Map Created:", ratingsMap);
@@ -303,13 +309,21 @@ export default function LibraryStatusPage() {
               image: lib.imageSrc,
               studyLink: lib.studySpaceLink,
               hasStudySpace: lib.hasStudySpace,
-              
+              weeklySchedule:scheduleMap[lib.name] || [],
               rooms: [], 
               roomsOpen: -1,
               roomsTotal: 0
             };
           });
-    
+          console.log(initialData[0].weeklySchedule)
+          console.log(initialData[1].weeklySchedule)
+          console.log(initialData[2].weeklySchedule)
+          console.log(initialData[3].weeklySchedule)
+          console.log(initialData[4].weeklySchedule)
+          console.log(initialData[5].weeklySchedule)
+          console.log(initialData[6].weeklySchedule)
+          console.log(initialData[7].weeklySchedule)
+          console.log(initialData[8].weeklySchedule)
           console.log("Pass 1: Basic info loaded");
           setLibraryData(initialData);
         const libraryPromises = allLibraries!.map(async (lib, index) => {
@@ -319,7 +333,7 @@ export default function LibraryStatusPage() {
           //   : Promise.resolve([]);
           const slug = getSlugFromName(lib.name);
 
-          const crowdLevel = ratingsMap[slug] || 60;
+          const crowdLevel = ratingsMap[lib.name] || 60;
           
           // Only fetch rooms if needed (We still fetch rooms individually for now)
           const roomData = lib.hasStudySpace 
@@ -341,7 +355,7 @@ export default function LibraryStatusPage() {
             roomsTotal: roomData.length || 0, // Dynamic total based on available data
             
             crowdLevel: crowdLevel,
-            
+            weeklySchedule:scheduleMap[lib.name] || [],
             features: lib.services ? fixData(lib.services) : {},
             nameID: slug,
             url: lib.googleMapsLink,
@@ -425,7 +439,7 @@ export default function LibraryStatusPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <SubmitReport></SubmitReport>
+            {/* <SubmitReport></SubmitReport> */}
 
 
               {/* <DatePicker date={date} setDate={setDate} /> */}
@@ -488,6 +502,7 @@ export default function LibraryStatusPage() {
         alt={`${lib.name} exterior`}
         className="h-full w-full object-cover"
       />
+
       {/* <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div> */}
       <Button
             size="icon"
@@ -507,6 +522,7 @@ export default function LibraryStatusPage() {
           >
             <Pin className={`h-4 w-4 transition-transform ${isPinned ? "fill-current" : "rotate-45"}`} />
           </Button>
+          
     </div>
                     <div className="p-4 space-y-2">
                       <div className="flex justify-between items-start">
@@ -522,7 +538,7 @@ export default function LibraryStatusPage() {
           className="h-9 pl-3 pr-4 bg-blue-50 text-blue-600 border-2 border-blue-100 rounded-full shadow-sm transition-all duration-300 ease-spring hover:scale-105 active:scale-95 hover:bg-blue-100 hover:border-blue-200 hover:shadow-md group"
         >
           {/* Icon wiggles on hover */}
-          <MapPin className="mr-1.5 h-4 w-4 fill-current opacity-80 transition-transform group-hover:rotate-12" />
+          <MapPin className="mr-0 h-4 w-4 fill-current opacity-80 transition-transform group-hover:rotate-12" />
           <span className="text-xs font-bold">Map</span>
         </Button>
                       </div>
@@ -540,7 +556,7 @@ export default function LibraryStatusPage() {
                       )}
                         {(lib.hours && lib.hours.length > 3 && (!lib.hours.includes('Closed') && lib.hours.length > 0)) && 
                           <div className="flex items-center text-slate-600 font-medium bg-white py-1 px-3 rounded-full shadow-sm border border-slate-100">
-                            <Clock className="mr-1.5 h-4 w-4 text-blue-400" />
+                            <Clock className="mr-1 h-4 w-4 text-blue-400" />
                             <span style={{ whiteSpace: 'pre-wrap' }}>{lib.hours}</span>
                           </div>
                         }
@@ -588,6 +604,11 @@ export default function LibraryStatusPage() {
                   </CardContent>
                   
                   <CardFooter>
+                    {(lib.weeklySchedule && lib.weeklySchedule.length>0 && !lib.weeklySchedule.every(item => item === 0)) &&       
+      <BusynessPopup 
+        schedule={lib.weeklySchedule || []} 
+        libraryName={lib.name} 
+      />}
                     {(lib.rooms.length>0||(lib.name=='Engineering & Mathematical Sciences Library')) && 
                   <Popover modal={true}>
                     <PopoverTrigger asChild>

@@ -5,6 +5,8 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const cron = require('node-cron');
+const { runBatchUpdate } = require('../backend/librarySchedulerUpdate');
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
@@ -13,14 +15,22 @@ const handle = app.getRequestHandler();
 console.log("Starting MoffittStatus Server...");
 
 app.prepare().then(() => {
+  
   const expressApp = express();
 
   expressApp.use(cors({
     origin: ['http://localhost:3003', 'https://moffittstatus.asuc.org']
   }));
   expressApp.use(express.json());
+  // every 15 minutes
+  cron.schedule('*/15 * * * *', () => {
+    console.log("Cron Triggered: Updating Library Capacity Status...");
+    runBatchUpdate();
+  });
 
-  // Backend API routes
+  runBatchUpdate();
+
+  // General Backend API routes
   try {
     const apiRoutes = require('../backend/routes');
     expressApp.use('/api', apiRoutes);
@@ -32,10 +42,6 @@ app.prepare().then(() => {
   // Health check
   expressApp.get('/health-test', (req, res) => res.send('MoffittStatus is online!'));
 
-  // ---------------------------------------------------------
-  // THE FIX: We use .use() instead of .all()
-  // This catches all pages (GET, POST, etc) without crashing regex parsers
-  // ---------------------------------------------------------
   expressApp.use(async (req, res) => {
     try {
       await handle(req, res);
@@ -48,10 +54,10 @@ app.prepare().then(() => {
 
   const server = createServer(expressApp);
 
-  // Socket setup
-  const socketPath = '/srv/apps/moffitstatus/moffitstatus.sock';//path.join(__dirname, 'moffitstatus.sock');
+  // Socket setup section
+  const socketPath = '/srv/apps/moffitstatus/moffitstatus.sock';
 
-  // Clean up old socket
+  // Clean up the old socket
   if (fs.existsSync(socketPath)) {
     try {
       fs.unlinkSync(socketPath);
@@ -60,11 +66,10 @@ app.prepare().then(() => {
     }
   }
 
-  // Listen
   server.listen(socketPath, () => {
     console.log(`> MoffittStatus listening on: ${socketPath}`);
     
-    // Permission fix for Nginx
+    // permission fix for Nginx
     try {
       fs.chmodSync(socketPath, '0777');
     } catch (e) {

@@ -1,7 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const apiRoutes = require('./routes'); // Imports from routes/index.js
+const apiRoutes = require('./routes');
+
+const cron = require('node-cron');
+const { runBatchUpdate } = require('../backend/librarySchedulerUpdate');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -10,8 +13,7 @@ const PORT = process.env.PORT || 8000;
 app.use(cors({
   origin: [
     'http://localhost:3003',      // Local frontend
-    'https://www.moffittstatus.asuc.org',   // Deployed frontend
-    // 'https://your-app.vercel.app' // Staging/Alternative domain
+    'https://www.moffittstatus.asuc.org'   // Deployed frontend
   ]
 }));
 app.use(express.json()); // Parse JSON bodies
@@ -19,6 +21,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Mount all routes under /api
 app.use('/api', apiRoutes);
+
+runBatchUpdate();
 
 // Simple health check
 app.get('/', (req, res) => {

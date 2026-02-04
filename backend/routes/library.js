@@ -15,6 +15,18 @@ router.post('/update', async (req, res) => {
   }
 
   try {
+    const libraryRecord = await prisma.library.findFirst({
+      where: {
+        name: {
+            // "contains" allows fuzzy matching, or use "equals" if your frontend is strict
+            contains: library 
+        }
+      }
+    });
+
+    if (!libraryRecord) {
+      return res.status(404).json({ error: `Library '${library}' not found in database.` });
+    }
     // mapped 'library' from body to 'libraryName' in database
     const newRating = await prisma.rating.create({
       data: {
@@ -38,106 +50,189 @@ router.post('/update', async (req, res) => {
 // GET /api/library/:libraryName
 // Example: GET /api/library/Moffitt
 router.get('/:libraryName', async (req, res) => {
-  const { libraryName } = req.params;
+  // 1. Decode the name (e.g., "Moffitt%20Library" -> "Moffitt Library")
+  const libraryNameParam = decodeURIComponent(req.params.libraryName);
 
-  // The "Independent Value" (Baseline/Prior): A neutral starting point
-  const INDEPENDENT_VALUE = 50; 
-  // The "Controllable Constant" (Weight): Equivalent to having X number of phantom ratings
-  const WEIGHT_CONSTANT = 5; 
+  const WEIGHT_CONSTANT = 5;
+  const FALLBACK_VALUE = 20; // Default if no data exists
 
   try {
-    // Calculate timestamp for 3 hours ago
     const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000);
 
-    // Find all ratings for this specific library created in the last 3 hours
-    const ratings = await prisma.rating.findMany({
+    // 2. Fetch the Library Data first (for Live/Historical info)
+    // We use 'findFirst' with 'contains' to handle slight naming differences
+    const libraryData = await prisma.library.findFirst({
       where: {
-        libraryName: libraryName,
-        createdAt: {
-          gte: threeHoursAgo, // Greater than or equal to 3 hours ago
-        },
-      },
-      orderBy: {
-        createdAt: 'desc', // Show newest ratings first
-      },
+        name: { contains: libraryNameParam }
+      }
     });
 
-    // 1. Calculate the sum of the actual ratings found
+    if (!libraryData) {
+      return res.status(404).json({ error: 'Library not found' });
+    }
+
+    // 3. Fetch specific User Ratings for this library
+    const ratings = await prisma.rating.findMany({
+      where: {
+        libraryName: libraryData.name, // Use the official DB name
+        createdAt: { gte: threeHoursAgo },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    // --- A. Determine INDEPENDENT_VALUE (The Baseline) ---
+    let independentValue = FALLBACK_VALUE;
+
+    // Helper: Get Berkeley Time (reused logic)
+    const getBerkeleyTime = () => {
+      const now = new Date();
+      const options = { timeZone: 'America/Los_Angeles', weekday: 'long', hour: 'numeric', hour12: false };
+      const formatter = new Intl.DateTimeFormat('en-US', options);
+      const parts = formatter.formatToParts(now);
+      let hour = parseInt(parts.find(p => p.type === 'hour').value, 10);
+      if (hour === 24) hour = 0;
+      return { dayName: parts.find(p => p.type === 'weekday').value, hour };
+    };
+
+    const { dayName, hour } = getBerkeleyTime();
+
+    // Logic: Live > Historical > Fallback
+    if (libraryData.currentBusyness > 0) {
+      independentValue = libraryData.currentBusyness;
+    } else if (libraryData.weeklySchedule) {
+      const todaySchedule = libraryData.weeklySchedule.find(d => d.name === dayName);
+      if (todaySchedule && todaySchedule.data && todaySchedule.data[hour] > 0) {
+        independentValue = todaySchedule.data[hour];
+      }
+    }
+
+    // --- B. Calculate Stats ---
     const sumOfActualRatings = ratings.reduce((acc, curr) => acc + curr.rating, 0);
     const countOfActualRatings = ratings.length;
 
-    // 2. Calculate Weighted Average
-    // Formula: ( (Baseline * Weight) + SumOfActual ) / ( Weight + CountOfActual )
-    // If 0 ratings exist, the result is exactly INDEPENDENT_VALUE.
+    // --- C. The Algorithm ---
     const weightedAverage = (
-      (INDEPENDENT_VALUE * WEIGHT_CONSTANT) + sumOfActualRatings
+      (independentValue * WEIGHT_CONSTANT) + sumOfActualRatings
     ) / (WEIGHT_CONSTANT + countOfActualRatings);
 
     res.json({
-      library: libraryName,
-      count: countOfActualRatings,
-      average: weightedAverage.toFixed(1), // e.g., "3.2"
-      config: {
-        baseline: INDEPENDENT_VALUE,
-        weight: WEIGHT_CONSTANT
+      library: libraryData.name,
+      average: weightedAverage.toFixed(1),
+      stats: {
+        total_reviews: countOfActualRatings,
+        baseline_used: independentValue,
+        source: libraryData.currentBusyness > 0 ? 'Live Google Data' : 'Historical/Fallback'
       },
-      reviews: ratings,
+      reviews: ratings, // Return the actual text reviews/details
+      weeklySchedule: libraryData.weeklySchedule,
     });
+
   } catch (error) {
-    console.error('Error fetching ratings:', error);
-    res.status(500).json({ error: 'Failed to fetch ratings' });
+    console.error('Error fetching library details:', error);
+    res.status(500).json({ error: 'Failed to fetch library details' });
   }
 });
 
 router.get('/', async (req, res) => {
-  const INDEPENDENT_VALUE = 50;
   const WEIGHT_CONSTANT = 5;
+  const FALLBACK_VALUE = 20; // Only used if the live & historical data are both 0
 
   try {
     const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000);
 
-    // 1. Let the DB do the math. 
-    // This returns an array of objects containing only the stats per library.
-    const groupedRatings = await prisma.rating.groupBy({
-      by: ['libraryName'], // Group results by library
-      where: {
-        createdAt: {
-          gte: threeHoursAgo,
-        },
-      },
-      _sum: {
-        rating: true, // Calculate Sum
-      },
-      _count: {
-        rating: true, // Calculate Count
-      },
+    // Fetch ALL Library Data
+    const libraries = await prisma.library.findMany({
+      select: {
+        name: true,
+        currentBusyness: true, // Live Google Data
+        weeklySchedule: true,  // Historical Data (JSON)
+      }
     });
 
-    // 2. Process the results in JavaScript
-    // We map over the lightweight results to apply your custom weighted formula
-    const results = groupedRatings.map((group) => {
-      const sumOfActualRatings = group._sum.rating || 0;
-      const countOfActualRatings = group._count.rating || 0;
+    // Fetch User Ratings (Grouped by Library)
+    const groupedRatings = await prisma.rating.groupBy({
+      by: ['libraryName'],
+      where: {
+        createdAt: { gte: threeHoursAgo },
+      },
+      _sum: { rating: true },
+      _count: { rating: true },
+    });
 
+    // Returns { dayName: 'Monday', hour: 14 }
+    const getBerkeleyTime = () => {
+      const now = new Date();
+      const options = { 
+        timeZone: 'America/Los_Angeles', 
+        weekday: 'long', 
+        hour: 'numeric', 
+        hour12: false // Returns 0-23
+      };
+      
+      const formatter = new Intl.DateTimeFormat('en-US', options);
+      const parts = formatter.formatToParts(now);
+      
+      const dayName = parts.find(p => p.type === 'weekday').value;
+      const hourStr = parts.find(p => p.type === 'hour').value;
+      
+      let hour = parseInt(hourStr, 10);
+      if (hour === 24) hour = 0;
+
+      return { dayName, hour };
+    };
+
+    const { dayName, hour } = getBerkeleyTime();
+
+    // 3. Combine & Calculate
+    const results = libraries.map((lib) => {
+      
+      // Find INDEPENDENT_VALUE (The Baseline)
+      let independentValue = FALLBACK_VALUE;
+
+      // Live Google Data, the default
+      if (lib.currentBusyness > 0) {
+        independentValue = lib.currentBusyness;
+      } 
+      // Historical Data (if Live is 0)
+      else if (lib.weeklySchedule) {
+        // Find today's schedule in the JSON
+        // Structure: [{ name: 'Monday', data: [0, 0, ... 50, ...] }, ...]
+        const todaySchedule = lib.weeklySchedule.find(d => d.name === dayName);
+        
+        // If we have data for this hour, use it
+        if (todaySchedule && todaySchedule.data && todaySchedule.data[hour] > 0) {
+          independentValue = todaySchedule.data[hour];
+        }
+      }
+
+      // Get User Ratings for this Library. Find the group that matches this library name
+      const ratingGroup = groupedRatings.find(r => r.libraryName === lib.name);
+      const sumOfActualRatings = ratingGroup?._sum.rating || 0;
+      const countOfActualRatings = ratingGroup?._count.rating || 0;
+
+      // Bayesian avg
       const weightedAverage = (
-        (INDEPENDENT_VALUE * WEIGHT_CONSTANT) + sumOfActualRatings
+        (independentValue * WEIGHT_CONSTANT) + sumOfActualRatings
       ) / (WEIGHT_CONSTANT + countOfActualRatings);
-
+      console.log(lib)
       return {
-        library: group.libraryName,
-        count: countOfActualRatings,
-        average: weightedAverage.toFixed(1),
-        // Note: We generally do NOT return raw reviews in a bulk summary 
-        // list because the payload would be massive.
+        library: lib.name,
+        average: weightedAverage.toFixed(1), // The final number to show UI
+        weeklySchedule: lib.weeklySchedule || [],
+        // Debug info only 
+        meta: {
+          baseline: independentValue,
+          source: lib.currentBusyness > 0 ? 'Live' : 'Historical/Fallback',
+          user_reviews: countOfActualRatings
+        }
       };
     });
 
+    // Sort by busiest first
+    //results.sort((a, b) => b.score - a.score);
+
     res.json({
-      meta: {
-        baseline: INDEPENDENT_VALUE,
-        weight: WEIGHT_CONSTANT,
-        period: '3h'
-      },
+      success: true,
       data: results
     });
 

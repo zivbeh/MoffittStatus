@@ -20,7 +20,7 @@ import {
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label'; 
-import { X, VolumeX, Users, Send } from 'lucide-react'; 
+import { X, VolumeX, Users, Send, Volume2 } from 'lucide-react'; 
 import { cn, GeoLocation, getCurrentLocation, getDynamicStyles } from '@/lib/utils'; 
 import { PersonDetector } from './personDetector';
 import { updateLibraryRating } from '@/lib/firebaseMethods';
@@ -98,7 +98,7 @@ export default function BusyReportDialog({ open, setOpen, onOpenChange }: { open
         {/* <PersonDetector setPercent={setBusyPercentage}></PersonDetector> */}
         {/* <span className='flex justify-center font-bold text-4xl text-blue-400'>OR</span> */}
         <div className="grid gap-0 py-0">
-          <div className="pl-5 md:pl-15 grid items-center justify-center md:gap-4 grid-cols-2">
+          {/* <div className="pl-5 md:pl-15 grid items-center justify-center md:gap-4 grid-cols-2">
             <div>
               <Label htmlFor="library" className="block text-sm font-bold text-gray-700 mb-2">
                 Library
@@ -127,7 +127,6 @@ export default function BusyReportDialog({ open, setOpen, onOpenChange }: { open
               <SelectValue placeholder="Choose floor" />
             </SelectTrigger>
             <SelectContent>
-              {/* Map over the array for the selected library */}
               {LIBRARY_FLOORS[selectedLibrary].map((floorName) => (
                 <SelectItem key={floorName} value={floorName}>
                   {floorName}
@@ -136,7 +135,7 @@ export default function BusyReportDialog({ open, setOpen, onOpenChange }: { open
             </SelectContent>
           </Select>
             </div>
-          </div>
+          </div> */}
 
 
           <div className="mt-4 text-center">
@@ -162,52 +161,35 @@ export default function BusyReportDialog({ open, setOpen, onOpenChange }: { open
             </div>
           </div>
 
-           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 mt-6">
-            <div className="flex items-center justify-between rounded-lg border px-4 shadow-sm bg-gray-50">
-              <div className="flex items-center gap-2">
-                <VolumeX className="h-5 w-5 text-gray-400" />
-                <Label htmlFor="loud-mode" className="text-base font-medium text-gray-800">
-                  Loud?
-                </Label>
-              </div>
-              <div className='flex flex-col gap-y-2 justify-center items-center'>
-              <Label htmlFor="loud-mode" className="text-base text-gray-500 ml-2">
-                {isLoud ? 'Loud' : 'Quiet'}
-              </Label>
-              <Switch
-                id="loud-mode"
-                checked={isLoud}
-                onCheckedChange={setIsLoud}
-                aria-label="Toggle loud mode"
-                className='ml-2'
-              />
-              
+          <div className="flex flex-wrap gap-3 mt-6">
+  {/* Loud Toggle */}
+  <button
+    onClick={() => setIsLoud(!isLoud)}
+    className={`
+      flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-200
+      ${isLoud 
+        ? "bg-black text-white border-black shadow-md" 
+        : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}
+    `}
+  >
+    <Volume2 className="h-4 w-4" />
+    <span className="text-sm font-medium">{isLoud ? "Loud Environment" : "Quiet Environment"}</span>
+  </button>
 
-              </div>
-            </div>
-            <div className="flex items-center justify-between rounded-lg border p-4 shadow-sm bg-gray-50">
-              <div className="flex items-center gap-3">
-                <Users className="h-6 w-6 text-gray-400" />
-                <Label htmlFor="groups-mode" className="text-base font-medium text-gray-800">
-                  Good for Groups?
-                </Label>
-              </div>
-             <div className='flex flex-col items-center gap-y-2'>
-             <Label htmlFor="groups-mode" className="text-base text-gray-500 ml-2">
-                 {goodForGroups ? 'Yes' : 'No'}
-              </Label>
-             <Switch
-                id="groups-mode"
-                checked={goodForGroups}
-                onCheckedChange={setGoodForGroups}
-                aria-label="Toggle good for groups"
-                className='ml-2'
-              />
-              
-
-             </div>
-            </div>
-          </div>
+  {/* Groups Toggle */}
+  <button
+    onClick={() => setGoodForGroups(!goodForGroups)}
+    className={`
+      flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-200
+      ${goodForGroups 
+        ? "bg-blue-600 text-white border-blue-600 shadow-md" 
+        : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}
+    `}
+  >
+    <Users className="h-4 w-4" />
+    <span className="text-sm font-medium">Good for Groups</span>
+  </button>
+</div>
         </div>
 
         <div className="flex justify-end pt-4 border-t border-gray-200">

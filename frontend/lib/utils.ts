@@ -46,7 +46,7 @@ export const getDynamicStyles = (percentage:number) => {
   if (percentage <= 25) {
     // Green-600
     statusName='Not Crowded'
-    statusType='Not Crowded';
+    statusType='NotCrowded';
     textClass = 'text-green-600';
     sliderClass = 'hsl(142, 76%, 36%)';
   } else if (percentage <= 50) {

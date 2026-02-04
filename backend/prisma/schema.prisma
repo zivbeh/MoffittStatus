@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql" //"postgresql"
+  provider = "mysql"
   url = env("DATABASE_URL")
 }
 
@@ -23,14 +23,46 @@ model User {
 model Rating {
   id Int @id @default(autoincrement())
   libraryName String @db.VarChar(255)
-  rating Int
+  rating Int // 0 to 100
   goodForGroups Boolean
   isLoud Boolean
   floor String @db.VarChar(255)
   latitude      Float?
   longitude     Float?
   createdAt DateTime @default(now())
+  libraryId      Int?
+  library        Library? @relation(fields: [libraryId], references: [id])
   user      User?  @relation(fields: [userId], references: [id])  // optional relation
   userId    Int?   // nullable foreign key
-  @@index([libraryName, createdAt]) //This index makes the 'where' clause instant for 'library'
+  @@index([libraryName, createdAt, libraryId]) //This index makes the 'where' clause instant for 'library'
+}
+
+model Library {
+  id              Int      @id @default(autoincrement())
+  name            String   @unique
+  googleUrl       String   @db.Text
+  
+  address        String?  @db.VarChar(255)
+  imageSrc       String?  @db.Text
+  studySpaceUrl  String?  @db.Text
+  services       String?  @db.Text
+  hasStudySpace  Boolean  @default(false)
+  
+  currentBusyness Int      @default(0)
+  isOpen          Boolean  @default(false)
+  lastUpdated     DateTime @default(now())
+
+  weeklySchedule  Json? 
+  ratings         Rating[]
+  logs            TrafficLog[]
+}
+
+model TrafficLog {
+  id          Int      @id @default(autoincrement())
+  libraryId   Int
+  library     Library  @relation(fields: [libraryId], references: [id])
+  busyness    Int
+  createdAt   DateTime @default(now())
+
+  @@index([libraryId, createdAt])
 }
