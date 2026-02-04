@@ -16,7 +16,7 @@ export function StatusBadge({crowdLevel=0, variant="", className=""}){
     //   console.log((variant=="" ? (getDynamicStyles(crowdLevel).statusType || 'success') : variant))
       const colors = colorMap[variant=="" ? (getDynamicStyles(crowdLevel).statusType || 'success') : variant];
     return(
-    <div className={cn("flex items-center font-bold py-1 px-3 rounded-full",className, colors ? colors.bg : "")}>
+    <div className={cn("flex items-center font-bold py-1 px-3 rounded-full text-xs",className, colors ? colors.bg : "")}>
     <StatusDot 
       colors={colors}
       className="mr-2" 

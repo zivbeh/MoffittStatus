@@ -429,7 +429,7 @@ export default function LibraryStatusPage() {
         <div className="space-y-6">
           <div>
             <div className="flex flex-col gap-4 mb-4">
-            <div className="relative flex-grow">
+            <div className="relative flex-grow rounded-lg">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
@@ -489,21 +489,47 @@ export default function LibraryStatusPage() {
 
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8 sm:gap-8 md:gap-8 lg:gap-24 xl:gap-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8 sm:gap-8 md:gap-8 lg:gap-24 xl:gap-16 border-none bg-transparent shadow-none">
             {libraryData && libraryData.length >=29 && sortedLibraries && sortedLibraries.map((lib) => {
               const roomPercent = (lib.roomsOpen / lib.roomsTotal) * 100;
               const isPinned = pinnedIds.includes(lib.id)
               return (
-                <Card key={lib.id} className="overflow-hidden rounded-[2rem] border-none bg-white shadow-[0_20px_40px_rgb(224,231,255,0.8)]">
-                  <CardHeader className="p-0">
-                  <div className="relative h-48 w-full overflow-hidden rounded-[1.5rem] shadow-sm">
+                <Card key={lib.id} className="overflow-hidden p-0 gap-0 rounded-[2rem] border-none bg-transparent shadow-none ">
+                  <CardHeader className="p-0 [.border-b]:pb-6">
+                  <div className="relative h-48 w-full overflow-hidden rounded-[1.5rem]">
       <img
         src={lib.image}
         alt={`${lib.name} exterior`}
         className="h-full w-full object-cover"
       />
-
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/5 to-transparent pointer-events-none" />
+      <div className="absolute top-3 left-3 z-20">
+      {lib.isOpen ? (
+                        <StatusBadge crowdLevel={lib.crowdLevel} variant=""></StatusBadge>
+                      ) : (
+                        <div className="flex items-center font-bold py-0 rounded-full">
+                          <StatusBadge 
+                            variant="closed" 
+                            className="" 
+                            crowdLevel={0}
+                          />
+                        </div>
+                      )}
+    </div>
+    <div className='absolute bottom-4 left-4 z-20'>
+      
+    <CardTitle className="text-xl font-bold text-gray-100 tracking-tight leading-tight" style={{ whiteSpace: 'pre-wrap' }}>
+          {lib.name}
+        </CardTitle>       
+        {(lib.hours && lib.hours.length > 3 && (!lib.hours.includes('Closed') && lib.hours.length > 0)) && 
+                          <div className="flex items-center text-slate-600 font-medium bg-transparent py-1 rounded-full border-none border-slate-100">
+                            <Clock className="mr-1 h-4 w-4 text-blue-400" />
+                            <span style={{ whiteSpace: 'pre-wrap' }} className='text-white text-light'>{lib.hours}</span>
+                          </div>
+                        }
+    </div>
       {/* <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div> */}
+      
       <Button
             size="icon"
             variant="ghost"
@@ -512,7 +538,7 @@ export default function LibraryStatusPage() {
               togglePin(lib.id);
             }}
             className={`
-              absolute top-3 right-3 z-20 h-8 w-8 rounded-full 
+              absolute top-3 right-3 z-20 h-6 w-6 rounded-full 
               transition-all duration-300 backdrop-blur-md shadow-sm
               ${isPinned 
                 ? "bg-blue-500 text-white hover:bg-blue-600" 
@@ -522,52 +548,22 @@ export default function LibraryStatusPage() {
           >
             <Pin className={`h-4 w-4 transition-transform ${isPinned ? "fill-current" : "rotate-45"}`} />
           </Button>
-          
-    </div>
-                    <div className="p-4 space-y-2">
-                      <div className="flex justify-between items-start">
-                      <CardTitle className="text-2xl font-bold text-indigo-950 tracking-tight leading-tight" style={{ whiteSpace: 'pre-wrap' }}>
-          {lib.name}
-        </CardTitle>                        
-        <Button
+          <Button
           size="sm"
           onClick={(e) => {
             e.stopPropagation();
             window.open(lib.url, '_blank');
           }}
-          className="h-9 pl-3 pr-4 bg-blue-50 text-blue-600 border-2 border-blue-100 rounded-full shadow-sm transition-all duration-300 ease-spring hover:scale-105 active:scale-95 hover:bg-blue-100 hover:border-blue-200 hover:shadow-md group"
+          className="absolute top-3 right-12 h-6 p-1 bg-blue-50 text-blue-600 border-2 border-blue-200 rounded-full transition-all duration-300 ease-spring hover:scale-105 active:scale-95 hover:bg-blue-100 hover:border-blue-200 hover:shadow-md group"
         >
           {/* Icon wiggles on hover */}
-          <MapPin className="mr-0 h-4 w-4 fill-current opacity-80 transition-transform group-hover:rotate-12" />
-          <span className="text-xs font-bold">Map</span>
+          <MapPin className="mr-0 h-2 w-2 fill-current opacity-80 transition-transform group-hover:rotate-12" />
+          {/* <span className="text-xs font-bold">Map</span> */}
         </Button>
-                      </div>
-                      <div className="flex flex-wrap gap-y-2 justify-between items-center text-sm bg-transparent  rounded-2xl">
-                      {lib.isOpen ? (
-                        <StatusBadge crowdLevel={lib.crowdLevel} variant=""></StatusBadge>
-                      ) : (
-                        <div className="flex items-center font-bold py-1 rounded-full">
-                          <StatusBadge 
-                            variant="closed" 
-                            className="" 
-                            crowdLevel={0}
-                          />
-                        </div>
-                      )}
-                        {(lib.hours && lib.hours.length > 3 && (!lib.hours.includes('Closed') && lib.hours.length > 0)) && 
-                          <div className="flex items-center text-slate-600 font-medium bg-white py-1 px-3 rounded-full shadow-sm border border-slate-100">
-                            <Clock className="mr-1 h-4 w-4 text-blue-400" />
-                            <span style={{ whiteSpace: 'pre-wrap' }}>{lib.hours}</span>
-                          </div>
-                        }
-                      </div>
-                      { lib.calID && 
-                      <span className='flex items-right justify-end text-slate-400 font-medium mr-4' style={{ whiteSpace: 'pre-wrap' }}>{lib.calID}</span>
-                      }
-                    </div>
+    </div>
                   </CardHeader>
 
-                  <CardContent className="space-y-4">
+                  <CardContent className="gap-y-4 m-0">
                     <div className="flex flex-wrap gap-2 items-center">
                       {featureConfig.map((feature) => {
                         // Check if the feature is true in your data object
@@ -580,7 +576,7 @@ export default function LibraryStatusPage() {
                           <div
                             title={isActive ? feature.label : `No ${feature.label}`} // Native tooltip
                             className={`
-                              relative flex items-center justify-center w-9 h-9 rounded-full border transition-all duration-200 ease-in-out
+                              relative flex items-center justify-center w-6 h-6 rounded-full border transition-all duration-200 ease-in-out
                               ${isActive 
                                 ? `${feature.activeColor} shadow-sm scale-100 opacity-100` 
                                 : "bg-transparent border-transparent text-gray-800/20 scale-90 grayscale"
@@ -600,26 +596,34 @@ export default function LibraryStatusPage() {
                         </div>
                         );
                       })}
-                    </div>
-                  </CardContent>
-                  
-                  <CardFooter>
-                    {(lib.weeklySchedule && lib.weeklySchedule.length>0 && !lib.weeklySchedule.every(item => item === 0)) &&       
-      <BusynessPopup 
-        schedule={lib.weeklySchedule || []} 
-        libraryName={lib.name} 
-      />}
+                      <div className='flex flex-row gap-x-2 justify-right items-right'>
+                      {(lib.weeklySchedule && lib.weeklySchedule.length>0 && !lib.weeklySchedule.every(item => item === 0)) &&       
+                    <BusynessPopup 
+                      schedule={lib.weeklySchedule || []} 
+                      libraryName={lib.name} 
+                    />}
                     {(lib.rooms.length>0||(lib.name=='Engineering & Mathematical Sciences Library')) && 
                   <Popover modal={true}>
                     <PopoverTrigger asChild>
-                      <Button className="w-full text-sm md:text-md lg:w-24 lg:flex lg:flex-col lg:items-center bg-blue-400 hover:bg-blue-500 text-white font-bold">View Details</Button>
+                      <Button className="w-full text-xs md:text-md lg:w-24 lg:flex lg:flex-col lg:items-center bg-blue-400 hover:bg-blue-500 text-white font-bold">View Details</Button>
                     </PopoverTrigger>
                     <PopoverContent className="sm:w-[60vh] lg:w-[100vh] xl:w-[125vh] max-w-4xl bg-white ">
                       <Details currentLibrary={lib.nameID} floors={lib.rooms} key={lib.nameID} libraryName={lib.name}></Details>
                     </PopoverContent>
                   </Popover>
                   }
+                      </div>
+                    </div>
+                  </CardContent>
+                  
+                  
+                  <CardFooter className='gap-x-2 mb-0 [.border-t]:pt-0'>
+                  
+                    
                   </CardFooter>
+                  { lib.calID && 
+                      <span className='flex items-right justify-start ml-6 mt-0 p-0 text-slate-400 font-sm mr-4' style={{ whiteSpace: 'pre-wrap' }}>{lib.calID}</span>
+                      }
                 </Card>
               );
             })}
