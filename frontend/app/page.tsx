@@ -53,7 +53,7 @@ import Details from '@/app/components/libraryDetails';
 import { LibrariesLoading } from './components/librariesLoading';
 import { StatusDot } from './components/statusDot';
 import { StatusBadge } from './components/statusBadge';
-import { BusynessPopup } from './components/BusynessPopup';
+import { BusynessPopup } from './components/busynessPopup';
 type Library = {
   id: number;
   name: string;
