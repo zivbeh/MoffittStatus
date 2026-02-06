@@ -37,7 +37,7 @@ def get_capacity(url: str):
             return
 
         clean_name = urllib.parse.unquote(raw_name).replace('+', ' ')
-        search_term = f"{clean_name} Berkeley"
+        search_term = "{} Berkeley".format(clean_name)
         
         data = livepopulartimes.get_populartimes_by_address(search_term)
         

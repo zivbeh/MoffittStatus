@@ -1,21 +1,72 @@
-import { spawn } from 'child_process';
-import path from 'path';
-import { PrismaClient } from '@prisma/client';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import * as cheerio from 'cheerio';
-import process from 'process';
+if (!global.DOMException) {
+
+	    class DOMException extends Error {
+
+		            constructor(message, name) {
+
+				                super(message);
+
+				                this.name = name || 'Error';
+
+				            }
+
+		        }
+
+	    global.DOMException = DOMException;
+
+}
+const undici = require('undici');
+
+global.ReadableStream = undici.ReadableStream;
+
+global.Blob = undici.Blob;
+
+global.File = undici.File || class File extends undici.Blob {
+
+	    constructor(chunks, name, opts) {
+
+		            super(chunks, opts);
+
+		            this.name = name;
+
+		            this.lastModified = opts?.lastModified || Date.now();
+
+		        }
+
+};
+
+global.fetch = undici.fetch;
+
+global.Headers = undici.Headers;
+
+global.Request = undici.Request;
+
+global.Response = undici.Response;
+
+global.FormData = undici.FormData;
+
+
+
+console.log(" Node 16 Polyfills Loaded");
+
+const { spawn } = require('child_process');
+const path = require ('path');
+const { PrismaClient } = require ('@prisma/client');
+const { fileURLToPath } = require ('url');
+const { dirname } = require('path');
+const cheerio = require('cheerio');
+const process = require('process');
 const prisma = new PrismaClient();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+//const __filename = fileURLToPath(import.meta.url);
+//const __dirname = dirname(__filename);
+
 const isWindows = process.platform === "win32";
 
 const PYTHON_PATH = path.join(
   __dirname, 
   isWindows ? './venv/Scripts/python.exe' : './venv/bin/python'
 );const SCRIPT_PATH = path.join(__dirname, './python/googleMapCapacityScraper.py');
-
-export async function getAllLibraryHours() {
+async function getAllLibraryHours() {
     try {
       const baseUrl = 'https://www.lib.berkeley.edu';
       const response = await fetch(`${baseUrl}/hours`);
@@ -149,7 +200,7 @@ async function updateOneLibrary(library) {
   });
 }
 
-export async function runBatchUpdate() {
+async function runBatchUpdate() {
   console.log("STARTING BATCH UPDATE");
   const res = await getAllLibraryHours()
   if (res) {
@@ -190,4 +241,4 @@ export async function runBatchUpdate() {
   }
   console.log("UPDATE FINISHED");
 }
-
+module.exports = { getAllLibraryHours, runBatchUpdate };
