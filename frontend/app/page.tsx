@@ -11,6 +11,7 @@ import {
   Filter,
   Clock,
   MapPin,
+  MapPinCheckInside,
   Building,
   Moon,
   Coffee,
@@ -46,6 +47,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import * as Separator from "@radix-ui/react-separator";
 import { Slider } from "@/components/ui/slider";
 import { getAllLibraryRatings } from '@/lib/firebaseMethods';
 import { getAllLibraryHours, getAvailableRooms } from '@/lib/libCal';
@@ -54,6 +56,7 @@ import { LibrariesLoading } from './components/librariesLoading';
 import { StatusDot } from './components/statusDot';
 import { StatusBadge } from './components/statusBadge';
 import { BusynessPopup } from './components/busynessPopup';
+
 type Library = {
   id: number;
   name: string;
@@ -398,7 +401,55 @@ export default function LibraryStatusPage() {
     return 0; // maintain original order
   });
   return (
-    <main className="container mx-auto p-4 md:p-8">
+    <div className='bg-gray-200'>
+    <section className='w-full shadow-lg bg-white'>
+            <div className="flex flex-col gap-4 mb-4">
+            <div className="relative flex-grow flex justify-center items-center py-4">
+  <div className="relative w-full max-w-sm"> {/* Container to control width */}
+    <Input
+      type="search"
+      placeholder="Search libraries..."
+      className="w-full pl-12 text-md md:text-md font-strong border-none  bg-gray-200 rounded-full 
+                 focus:border-transparent focus:ring-0 focus:ring-transparent
+                 placeholder:text-gray-400 font-light transition-all duration-300
+                 shadow-sm hover:shadow-md"
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+    />
+    <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-6 w-4 text-gray-400" />
+  </div>
+</div>
+            </div>
+            <div className="flex flex-wrap gap-2 flex-row items-center justify-center">
+            <div className="flex flex-wrap gap-2 mb-6 ml-4 mr-4">
+            {featureConfig.map((feature) => {
+              const Icon = feature.icon;
+              const isSelected = selectedFilters.includes(feature.key);
+
+              return (
+                <Badge
+                  key={feature.key}
+                  onClick={() => toggleFilter(feature.key)}
+                  variant={isSelected ? "default" : "outline"} // Solid if selected, outline if not
+                  className={`
+                    cursor-pointer select-none transition-all duration-200 gap-1 pr-3
+                    ${isSelected 
+                      ? `bg-gray-900 text-white border-transparent shadow-sm`
+                      : " hover:bg-gray-600/50 border-none bg-gray-200"
+                    }
+                  `}
+                >
+                  <Icon className={`h-3 w-3 ${isSelected ? "text-current" : "text-muted-foreground"}`} />
+                  {feature.label}
+                  {isSelected}
+                </Badge>
+              );
+            })}
+          </div>
+          </div>
+
+          </section> 
+    <main className="container w-full p-4 md:p-8 mx-auto" >
       {/* 1. Recommendations Section */}
       {/* <section className="mb-8">
         <h2 className="text-2xl font-semibold tracking-tight mb-4">
@@ -424,71 +475,9 @@ export default function LibraryStatusPage() {
       </section>
 
       <hr className="my-8" /> */}
-
-      <section>        
-        <div className="space-y-6">
-          <div>
-            <div className="flex flex-col gap-4 mb-4">
-            <div className="relative flex-grow rounded-lg">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search libraries..."
-                className="pl-10 w-[256px] border-2 border-gray-400"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            {/* <SubmitReport></SubmitReport> */}
-
-
-              {/* <DatePicker date={date} setDate={setDate} /> */}
-
-              
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-            <div className="flex flex-wrap gap-2 mb-6">
-            {featureConfig.map((feature) => {
-              const Icon = feature.icon;
-              const isSelected = selectedFilters.includes(feature.key);
-
-              return (
-                <Badge
-                  key={feature.key}
-                  onClick={() => toggleFilter(feature.key)}
-                  variant={isSelected ? "default" : "outline"} // Solid if selected, outline if not
-                  className={`
-                    cursor-pointer select-none transition-all duration-200 gap-1 pr-3
-                    ${isSelected 
-                      ? `${feature.activeColor} border-transparent font-medium shadow-sm` // Active Style
-                      : "text-muted-foreground hover:bg-gray-200/50 border-dashed"           // Inactive Style
-                    }
-                  `}
-                >
-                  <Icon className={`h-3 w-3 ${isSelected ? "text-current" : "text-muted-foreground"}`} />
-                  {feature.label}
-                  {isSelected && <span className="ml-1 text-[10px] opacity-60">✕</span>}
-                </Badge>
-              );
-            })}
-            
-            {/* Optional: Clear all button */}
-            {selectedFilters.length > 0 && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setSelectedFilters([])}
-                className="h-6 text-xs text-muted-foreground"
-              >
-                Clear filters
-              </Button>
-            )}
-          </div>
-          </div>
-
-          </div>
-
+        
+      <section className="space-y-6">   
+        <div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8 sm:gap-8 md:gap-8 lg:gap-24 xl:gap-16 border-none bg-transparent shadow-none">
             {libraryData && libraryData.length >=29 && sortedLibraries && sortedLibraries.map((lib) => {
               const roomPercent = (lib.roomsOpen / lib.roomsTotal) * 100;
@@ -496,13 +485,13 @@ export default function LibraryStatusPage() {
               return (
                 <Card key={lib.id} className="overflow-hidden p-0 gap-0 rounded-[2rem] border-none bg-transparent shadow-none ">
                   <CardHeader className="p-0 [.border-b]:pb-6">
-                  <div className="relative h-48 w-full overflow-hidden rounded-[1.5rem]">
+                  <div className="relative h-64 w-full overflow-hidden rounded-[1.5rem]">
       <img
         src={lib.image}
         alt={`${lib.name} exterior`}
         className="h-full w-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/5 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/60 to-transparent pointer-events-none" />
       <div className="absolute top-3 left-3 z-20">
       {lib.isOpen ? (
                         <StatusBadge crowdLevel={lib.crowdLevel} variant=""></StatusBadge>
@@ -518,19 +507,68 @@ export default function LibraryStatusPage() {
     </div>
     <div className='absolute bottom-4 left-4 z-20'>
       
-    <CardTitle className="text-xl font-bold text-gray-100 tracking-tight leading-tight" style={{ whiteSpace: 'pre-wrap' }}>
+    <CardTitle className="text-lg font-sans text-gray-100 tracking-tight leading-tight w-full" style={{ whiteSpace: 'pre-wrap' }}>
           {lib.name}
         </CardTitle>       
         {(lib.hours && lib.hours.length > 3 && (!lib.hours.includes('Closed') && lib.hours.length > 0)) && 
-                          <div className="flex items-center text-slate-600 font-medium bg-transparent py-1 rounded-full border-none border-slate-100">
-                            <Clock className="mr-1 h-4 w-4 text-blue-400" />
-                            <span style={{ whiteSpace: 'pre-wrap' }} className='text-white text-light'>{lib.hours}</span>
-                          </div>
-                        }
+            <div className="flex items-center text-slate-600 bg-transparent py-1 rounded-full border-none border-slate-100">
+              <Clock className="mr-2 h-3 w-3 text-gray-200" />
+              <span style={{ whiteSpace: 'pre-wrap' }} className='text-white font-extralight text-xs'>{lib.hours}</span>
+            </div>
+          }
+
+        <Separator.Root
+          decorative
+          orientation="horizontal"
+          className="mt-2 mb-1 h-px w-[350px] bg-gray-400/30"
+        />        
+        <div className="flex flex-wrap gap-1 items-center">
+          {featureConfig.map((feature) => {
+            // Check if the feature is true in your data object
+            const isActive = lib.features[feature.key];
+            const IconComponent = feature.icon;
+            return (
+              <div key={feature.key}>
+              <Tooltip>
+                <TooltipTrigger>
+              <div
+                title={isActive ? feature.label : `No ${feature.label}`} // Native tooltip
+                className={`
+                  relative flex items-center justify-center w-6 h-6 rounded-full border-none transition-all duration-200 ease-in-out
+                  ${isActive 
+                    ? `scale-100 opacity-100 text-gray-200` 
+                    : "bg-transparent border-transparent text-gray-100/20 scale-90 grayscale"
+                  }
+                `}
+              >
+                
+                <IconComponent 
+                  className={`h-4 w-4`} 
+                />
+              </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{isActive ? feature.label : `No ${feature.label}`}</p>
+              </TooltipContent>
+            </Tooltip>
+            </div>
+            );
+          })}
+          {/* <div className='flex flex-row gap-x-2 justify-right items-right'>
+          {(lib.weeklySchedule && lib.weeklySchedule.length>0 && !lib.weeklySchedule.every(item => item === 0)) &&       
+        <BusynessPopup 
+          schedule={lib.weeklySchedule || []} 
+          libraryName={lib.name} 
+        />
+        }
+        
+          </div> */}
+        </div>
     </div>
+    
       {/* <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div> */}
       
-      <Button
+      {/* <Button
             size="icon"
             variant="ghost"
             onClick={(e) => {
@@ -547,73 +585,22 @@ export default function LibraryStatusPage() {
             `}
           >
             <Pin className={`h-4 w-4 transition-transform ${isPinned ? "fill-current" : "rotate-45"}`} />
-          </Button>
+          </Button> */}
           <Button
           size="sm"
           onClick={(e) => {
             e.stopPropagation();
             window.open(lib.url, '_blank');
           }}
-          className="absolute top-3 right-12 h-6 p-1 bg-blue-50 text-blue-600 border-2 border-blue-200 rounded-full transition-all duration-300 ease-spring hover:scale-105 active:scale-95 hover:bg-blue-100 hover:border-blue-200 hover:shadow-md group"
+          className="absolute top-3 right-6 h-6 p-1 bg-gray-800/60 backdrop-blur-md text-white border-0 rounded-full transition-all duration-300 ease-spring hover:scale-105 active:scale-95 hover:bg-gray-600 hover:border-blue-200 hover:shadow-md group"
         >
-          {/* Icon wiggles on hover */}
-          <MapPin className="mr-0 h-2 w-2 fill-current opacity-80 transition-transform group-hover:rotate-12" />
-          {/* <span className="text-xs font-bold">Map</span> */}
+          <MapPin className="mr-0 h-2 w-2 opacity-80 transition-transform group-hover:rotate-12" />
         </Button>
     </div>
                   </CardHeader>
 
                   <CardContent className="gap-y-4 m-0">
-                    <div className="flex flex-wrap gap-2 items-center">
-                      {featureConfig.map((feature) => {
-                        // Check if the feature is true in your data object
-                        const isActive = lib.features[feature.key];
-                        const IconComponent = feature.icon;
-                        return (
-                          <div key={feature.key}>
-                          <Tooltip>
-                            <TooltipTrigger>
-                          <div
-                            title={isActive ? feature.label : `No ${feature.label}`} // Native tooltip
-                            className={`
-                              relative flex items-center justify-center w-6 h-6 rounded-full border transition-all duration-200 ease-in-out
-                              ${isActive 
-                                ? `${feature.activeColor} shadow-sm scale-100 opacity-100` 
-                                : "bg-transparent border-transparent text-gray-800/20 scale-90 grayscale"
-                              }
-                            `}
-                          >
-                            
-                            <IconComponent 
-                              className={`h-4 w-4 ${isActive && feature.key === 'late' ? "fill-current" : ""}`} 
-                            />
-                          </div>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>{isActive ? feature.label : `No ${feature.label}`}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                        </div>
-                        );
-                      })}
-                      <div className='flex flex-row gap-x-2 justify-right items-right'>
-                      {(lib.weeklySchedule && lib.weeklySchedule.length>0 && !lib.weeklySchedule.every(item => item === 0)) &&       
-                    <BusynessPopup 
-                      schedule={lib.weeklySchedule || []} 
-                      libraryName={lib.name} 
-                    />}
-                    {(lib.rooms.length>0||(lib.name=='Engineering & Mathematical Sciences Library')) && 
-                  <Popover modal={true}>
-                    <PopoverTrigger asChild>
-                      <Button className="w-full text-xs md:text-md lg:w-24 lg:flex lg:flex-col lg:items-center bg-blue-400 hover:bg-blue-500 text-white font-bold">View Details</Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="sm:w-[60vh] lg:w-[100vh] xl:w-[125vh] max-w-4xl bg-white ">
-                      <Details currentLibrary={lib.nameID} floors={lib.rooms} key={lib.nameID} libraryName={lib.name}></Details>
-                    </PopoverContent>
-                  </Popover>
-                  }
-                      </div>
-                    </div>
+                    
                   </CardContent>
                   
                   
@@ -632,6 +619,7 @@ export default function LibraryStatusPage() {
         </div>
       </section>
     </main>
+    </div>
   );
 }
 

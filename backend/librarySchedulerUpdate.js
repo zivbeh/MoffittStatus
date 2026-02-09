@@ -1,53 +1,31 @@
+// Required to resolve dependency error with OCF servers
 if (!global.DOMException) {
-
-	    class DOMException extends Error {
-
-		            constructor(message, name) {
-
-				                super(message);
-
-				                this.name = name || 'Error';
-
-				            }
-
-		        }
-
-	    global.DOMException = DOMException;
-
-}
+  class DOMException extends Error {
+    constructor(message, name) {
+        super(message);
+        this.name = name || 'Error';
+      }
+    }
+  global.DOMException = DOMException;
+  }
 const undici = require('undici');
-
 global.ReadableStream = undici.ReadableStream;
-
 global.Blob = undici.Blob;
-
 global.File = undici.File || class File extends undici.Blob {
-
-	    constructor(chunks, name, opts) {
-
-		            super(chunks, opts);
-
-		            this.name = name;
-
-		            this.lastModified = opts?.lastModified || Date.now();
-
-		        }
-
+  constructor(chunks, name, opts) {
+    super(chunks, opts);
+    this.name = name;
+    this.lastModified = opts?.lastModified || Date.now();
+  }
 };
 
 global.fetch = undici.fetch;
-
 global.Headers = undici.Headers;
-
 global.Request = undici.Request;
-
 global.Response = undici.Response;
-
 global.FormData = undici.FormData;
 
-
-
-console.log(" Node 16 Polyfills Loaded");
+console.log("Polyfills Loaded");
 
 const { spawn } = require('child_process');
 const path = require ('path');
